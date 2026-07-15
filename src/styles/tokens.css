@@ -11,6 +11,9 @@
   --success: #18794e;
   --warning: #8a4b00;
   --danger: #b42318;
+  --terminal-surface: #191919;
+  --terminal-ink: #ffffff;
+  --terminal-accent: #2f9bff;
   --content-wide: 1100px;
   --content: 960px;
   --body-width: 720px;
@@ -29,4 +32,7 @@
   --success: #32d583;
   --warning: #f5a524;
   --danger: #ff6b6b;
+  --terminal-surface: #151515;
+  --terminal-ink: #ffffff;
+  --terminal-accent: #5aa1ff;
 }

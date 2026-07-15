@@ -4,50 +4,84 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { readingTime, sortPosts } from '../../lib/posts';
 import { toSlug } from '../../lib/slug';
 import { sitePath } from '../../lib/paths';
+
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
   return posts
     .filter((post) => !post.data.draft)
     .map((post) => ({ params: { slug: post.id }, props: { post, posts } }));
 }
+
 const { post, posts } = Astro.props;
 const { Content } = await render(post);
-const data = Object.assign(
-  {
-    title: '',
-    type: 'Learning Notes',
-    category: 'AI Agents',
-    publishedAt: '',
-    updatedAt: undefined,
-    tags: [] as string[],
-  },
-  post.data,
-);
+const data = post.data;
 const ordered = sortPosts(posts.filter((item) => !item.data.draft));
 const index = ordered.findIndex((item) => item.id === post.id);
 const previous = ordered[index + 1];
 const next = ordered[index - 1];
+const tocItems = [...(post.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gmu)].map(
+  ([, hashes, heading]) => ({
+    level: hashes.length,
+    title: heading.trim(),
+    id: toSlug(heading.trim()),
+  }),
+);
+const related = ordered
+  .filter((item) => item.id !== post.id)
+  .map((item) => {
+    const sharedTags = item.data.tags.filter((tag) => data.tags.includes(tag)).length;
+    const sameCategory = item.data.category === data.category;
+    return { item, score: sharedTags * 10 + (sameCategory ? 1 : 0) };
+  })
+  .filter(({ score }) => score > 0)
+  .sort((a, b) => b.score - a.score || a.item.id.localeCompare(b.item.id))
+  .slice(0, 3)
+  .map(({ item }) => item);
 ---
 
-<BaseLayout title={data.title}
-  ><div class="container section">
+<BaseLayout title={data.title}>
+  <div class="container section post-page">
     <div class="article-layout">
-      <details class="toc" open>
-        <summary>[+] Contents</summary><ul>
-          <li><a href="#introduction">도입</a></li><li><a href="#implementation">본문</a></li>
-        </ul>
-      </details><article>
+      <aside class="article-toc" aria-label="Table of contents">
+        <p class="toc-title mono">TABLE OF CONTENTS</p>
+        {
+          tocItems.length > 0 ? (
+            <ol>
+              {tocItems.map((item, index) => (
+                <li class:list={{ 'toc-subitem': item.level === 3 }} data-toc-item={item.id}>
+                  <a data-toc-link href={`#${item.id}`}>
+                    {index + 1}. {item.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="toc-empty">No table-of-contents items.</p>
+          )
+        }
+      </aside>
+
+      <article class="post-article">
         <header class="article-header">
-          <div class="meta mono">[{data.type}] · {data.category}</div><h1 class="page-title">
-            {data.title}
-          </h1><div class="meta">
-            <span>{data.publishedAt}</span>{
-              data.updatedAt && <span>수정 {data.updatedAt}</span>
-            }<span>읽는 시간 {readingTime(post.body ?? '')}분</span>
+          <p class="article-kicker mono">
+            <span>{data.category.toUpperCase()}</span><span aria-hidden="true">/</span><span
+              >{data.type.toUpperCase()}</span
+            >
+          </p>
+          <h1 class="page-title">{data.title}</h1>
+          <div class="article-meta mono">
+            <span>{data.publishedAt}</span>
+            <span>{readingTime(post.body ?? '')}분 읽기</span>
+            {data.updatedAt && <span>Update: {data.updatedAt}</span>}
           </div>
-        </header><div id="introduction" class="article-body">
-          <span id="implementation" aria-hidden="true"></span><Content />
-        </div><ul class="tag-list">
+          <p class="article-lede">{data.description}</p>
+        </header>
+
+        <div class="article-body" data-article-content>
+          <Content />
+        </div>
+
+        <ul class="tag-list article-tags" aria-label="태그">
           {
             data.tags.map((tag) => (
               <li class="tag">
@@ -55,22 +89,153 @@ const next = ordered[index - 1];
               </li>
             ))
           }
-        </ul><nav aria-label="게시글 이동" class="footer-nav">
-          {
-            previous && (
-              <a href={sitePath(`/posts/${previous.id}/`)}>
-                ← {Object.assign({ title: '' }, previous.data).title}
-              </a>
-            )
-          }{
-            next && (
-              <a href={sitePath(`/posts/${next.id}/`)}>
-                {Object.assign({ title: '' }, next.data).title} →
-              </a>
-            )
-          }
-        </nav>
+        </ul>
+
+        {
+          (previous || next) && (
+            <nav aria-label="게시글 이동" class="post-pagination">
+              <div class="post-pagination-item previous-post">
+                {previous && (
+                  <a href={sitePath(`/posts/${previous.id}/`)}>
+                    <span class="mono">Previous Post</span>
+                    <strong>{previous.data.title}</strong>
+                  </a>
+                )}
+              </div>
+              <div class="post-pagination-item next-post">
+                {next && (
+                  <a href={sitePath(`/posts/${next.id}/`)}>
+                    <span class="mono">Next Post</span>
+                    <strong>{next.data.title}</strong>
+                  </a>
+                )}
+              </div>
+            </nav>
+          )
+        }
+
+        {
+          related.length > 0 && (
+            <section class="related-posts" aria-labelledby="related-title">
+              <h2 id="related-title" class="mono">
+                ✧ RELATED LOGS
+              </h2>
+              <div class="related-grid">
+                {related.map((item) => (
+                  <a class="related-card" href={sitePath(`/posts/${item.id}/`)}>
+                    <span class="related-placeholder" aria-hidden="true">
+                      NO IMAGE
+                    </span>
+                    <strong>{item.data.title}</strong>
+                    <time datetime={item.data.publishedAt}>{item.data.publishedAt}</time>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )
+        }
       </article>
     </div>
-  </div></BaseLayout
->
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  const tocItems = Array.from(document.querySelectorAll('[data-toc-item]'));
+  const tocLinks = Array.from(document.querySelectorAll('[data-toc-link]'));
+  const tocHeadings = tocLinks
+    .map((link) => {
+      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '');
+      return document.getElementById(id);
+    })
+    .filter((heading) => heading instanceof HTMLElement);
+  let tocUpdateScheduled = false;
+
+  const updateActiveToc = () => {
+    if (tocUpdateScheduled) return;
+    tocUpdateScheduled = true;
+    requestAnimationFrame(() => {
+      const headingsAboveMarker = tocHeadings.filter(
+        (heading) => heading.getBoundingClientRect().top <= 120,
+      );
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const isAtBottom = window.scrollY >= maxScroll - 8;
+      const lastHeading = tocHeadings.at(-1);
+      const hashHeading = tocHeadings.find(
+        (heading) => `#${encodeURIComponent(heading.id)}` === window.location.hash,
+      );
+      const activeHeading =
+        isAtBottom &&
+        lastHeading &&
+        (lastHeading.getBoundingClientRect().top <= 120 || hashHeading === lastHeading)
+          ? lastHeading
+          : (headingsAboveMarker.at(-1) ?? tocHeadings[0]);
+      const activeId = activeHeading?.id;
+      tocItems.forEach((item) =>
+        item.classList.toggle('toc-active', item.dataset.tocItem === activeId),
+      );
+      tocLinks.forEach((link) => {
+        if (link.getAttribute('href') === `#${activeId}`)
+          link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      tocUpdateScheduled = false;
+    });
+  };
+
+  window.addEventListener('scroll', updateActiveToc, { passive: true });
+  window.addEventListener('resize', updateActiveToc);
+  updateActiveToc();
+
+  const slugifyHeading = (value) =>
+    value
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/gu, '-')
+      .replace(/[^\p{L}\p{N}-]/gu, '');
+  document
+    .querySelectorAll('[data-article-content] h2, [data-article-content] h3')
+    .forEach((heading) => {
+      if (!heading.id) heading.id = slugifyHeading(heading.textContent ?? 'section');
+    });
+
+  document.querySelectorAll('[data-article-content] pre').forEach((pre) => {
+    if (pre.parentElement?.classList.contains('code-block')) return;
+    const code = pre.querySelector('code');
+    if (!code) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block';
+    const head = document.createElement('div');
+    head.className = 'code-head';
+    const language = document.createElement('span');
+    language.className = 'code-language mono';
+    language.textContent = code.className.match(/language-([\w-]+)/u)?.[1] ?? 'code';
+    const button = document.createElement('button');
+    button.className = 'copy-button mono';
+    button.type = 'button';
+    button.textContent = 'Copy';
+    button.setAttribute('aria-label', '코드 복사');
+    const status = document.createElement('p');
+    status.className = 'copy-status';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    head.append(language, button);
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.append(head, pre, status);
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent ?? '');
+        button.textContent = 'Copied';
+        status.textContent = 'Copied';
+      } catch {
+        button.textContent = 'Could not copy';
+        status.textContent = 'Could not copy. Please try again.';
+      }
+      window.setTimeout(() => {
+        button.textContent = 'Copy';
+        status.textContent = '';
+      }, 2000);
+    });
+  });
+</script>

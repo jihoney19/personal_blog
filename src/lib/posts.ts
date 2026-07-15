@@ -1,6 +1,6 @@
 export type SortablePost = { id: string; data: { publishedAt: string } };
 
-export function sortPosts(posts: SortablePost[]) {
+export function sortPosts<T extends SortablePost>(posts: T[]): T[] {
   return [...posts].sort(
     (a, b) => b.data.publishedAt.localeCompare(a.data.publishedAt) || a.id.localeCompare(b.id),
   );

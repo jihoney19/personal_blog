@@ -19,9 +19,18 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
     <meta name="description" content={description} />
     <title>{title} · {site.name}</title>
     <script is:inline>
-      const saved = localStorage.getItem('theme');
+      let saved = null;
+      try {
+        saved = localStorage.getItem('theme');
+      } catch {
+        document.documentElement.dataset.themePersistence = 'unavailable';
+      }
       const preferred =
-        saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        saved === 'dark' || saved === 'light'
+          ? saved
+          : matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
       document.documentElement.dataset.theme = preferred;
     </script>
   </head>
@@ -46,9 +55,7 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
             }
           </nav>
           <button class="theme-button" type="button" data-theme-toggle aria-label="다크 모드로 전환"
-            ><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label"
-              >다크 모드</span
-            ></button
+            ><span class="theme-label mono">MODE: LIGHT</span></button
           >
           <div class="mobile-actions">
             <button
@@ -56,9 +63,7 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
               type="button"
               data-theme-toggle
               aria-label="다크 모드로 전환"
-              ><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label"
-                >다크 모드</span
-              ></button
+              ><span class="theme-label mono">MODE: LIGHT</span></button
             >
             <button
               class="menu-button"
@@ -108,15 +113,17 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
           button.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
           button.setAttribute('title', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
           const label = button.querySelector('.theme-label');
-          const icon = button.querySelector('.theme-icon');
-          if (label) label.textContent = dark ? '라이트 모드' : '다크 모드';
-          if (icon) icon.textContent = dark ? '☀' : '☾';
+          if (label) label.textContent = dark ? 'MODE: DARK' : 'MODE: LIGHT';
         });
       document.querySelectorAll('[data-theme-toggle]').forEach((button) =>
         button.addEventListener('click', () => {
           document.documentElement.dataset.theme =
             document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-          localStorage.setItem('theme', document.documentElement.dataset.theme);
+          try {
+            localStorage.setItem('theme', document.documentElement.dataset.theme);
+          } catch {
+            document.documentElement.dataset.themePersistence = 'unavailable';
+          }
           updateThemeLabels();
         }),
       );

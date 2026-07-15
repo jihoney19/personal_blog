@@ -1,12 +1,119 @@
 ---
 import { site } from '../data/site';
+const heroTitle = site.heroTitleLines.join(' ');
 ---
 
-<section class="hero" aria-labelledby="hero-title">
-  <code class="mono">$ whoami</code>
-  <h1 id="hero-title">{site.heroTitle}</h1>
-  <p>{site.heroDescription}</p>
-  <p class="mono" aria-label="기술 스택">
-    ────────────────────────────────────────<br />{site.heroStack.join(' · ')}
-  </p>
+<section class="home-hero" aria-labelledby="hero-title">
+  <div class="container home-hero-inner">
+    <p class="hero-command mono"><span aria-hidden="true">$</span> whoami</p>
+    <h1 id="hero-title" aria-label={heroTitle}>
+      <span class="hero-statement">
+        {
+          site.heroTitleLines.map((line, index) => (
+            <span class="hero-title-line">
+              {line}
+              {index === site.heroTitleLines.length - 1 && (
+                <span class="terminal-cursor" aria-hidden="true" />
+              )}
+            </span>
+          ))
+        }
+      </span>
+    </h1>
+  </div>
 </section>
+
+<style>
+  .home-hero {
+    min-height: 312px;
+    background: var(--terminal-surface);
+    color: var(--terminal-ink);
+  }
+
+  .home-hero-inner {
+    display: flex;
+    min-height: 312px;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 64px;
+  }
+
+  .hero-command {
+    margin: 0 0 28px;
+    color: var(--terminal-ink);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .hero-command span {
+    margin-right: 8px;
+    color: var(--terminal-accent);
+  }
+
+  h1 {
+    max-width: 820px;
+    margin: 0;
+    font-size: clamp(27px, 3vw, 31px);
+    line-height: 1.65;
+  }
+
+  .hero-statement {
+    display: block;
+    max-width: 100%;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .terminal-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 20px;
+    margin-left: 8px;
+    background: var(--terminal-accent);
+    vertical-align: 0.02em;
+    animation: terminal-cursor-blink 0.9s steps(1, end) infinite;
+  }
+
+  @keyframes terminal-cursor-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .hero-title-line {
+    display: block;
+  }
+
+  @media (max-width: 640px) {
+    .home-hero,
+    .home-hero-inner {
+      min-height: 288px;
+    }
+
+    .home-hero-inner {
+      padding-block: 48px;
+    }
+
+    h1 {
+      font-size: 26px;
+      line-height: 1.55;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .terminal-cursor {
+      width: 7px;
+      height: 19px;
+      margin-left: 7px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .terminal-cursor {
+      animation: none;
+    }
+  }
+</style>

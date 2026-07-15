@@ -1,57 +1,78 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
   return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
 }
+
 const { project } = Astro.props;
 const { Content } = await render(project);
 const data = project.data;
 ---
 
-<BaseLayout title={data.title} currentPath="/projects/"
-  ><div class="container section">
-    <p class="mono">$ cat project.json</p><h1 class="page-title">{data.title}</h1><p>
-      {data.summary}
-    </p><dl class="spec-sheet">
-      <div class="spec-row">
-        <dt class="mono">STATUS</dt><dd class="status">{data.status}</dd>
-      </div><div class="spec-row">
-        <dt class="mono">PERIOD</dt><dd>
-          {data.startedAt}{data.endedAt ? ` — ${data.endedAt}` : ' — 진행 중'}
-        </dd>
-      </div><div class="spec-row"><dt class="mono">ROLE</dt><dd>{data.role}</dd></div><div
-        class="spec-row"
-      >
-        <dt class="mono">STACK</dt><dd>{data.stack.join(' · ')}</dd>
-      </div>{
-        data.repoUrl && (
-          <div class="spec-row">
-            <>
-              <dt class="mono">GITHUB</dt>
-              <dd>
-                <a href={data.repoUrl} rel="noreferrer">
-                  Repository
-                </a>
-              </dd>
-            </>
+<BaseLayout title={data.title} currentPath="/projects/">
+  <main class="project-detail">
+    <div class="project-shell">
+      <header class="project-hero">
+        <p class="project-kicker mono">
+          <span>PROJECT</span><span aria-hidden="true">/</span><span>CASE STUDY</span>
+        </p>
+        <h1>{data.title}</h1>
+        <p class="project-summary">{data.summary}</p>
+      </header>
+
+      <section class="project-spec" aria-label="Project specification">
+        <div class="project-spec-head">
+          <span class="project-terminal-title"
+            ><i></i><i></i><i></i><span class="mono">cat project.json</span></span
+          >
+          <span class="mono">JSON</span>
+        </div>
+        <div class="project-spec-code mono" aria-label="Project JSON configuration">
+          <span class="json-brace">&#123;</span>
+          <div class="project-json-grid">
+            <div>
+              <div><span class="json-key">"status"</span>: <span>"{data.status}"</span>,</div>
+              <div><span class="json-key">"role"</span>: <span>"{data.role}"</span>,</div>
+            </div>
+            <div>
+              <div>
+                <span class="json-key">"period"</span>:
+                <span>"{data.startedAt} – {data.endedAt ?? 'YYYY.MM.DD'}"</span>,
+              </div>
+              <div>
+                <span class="json-key">"stack"</span>: [
+                {
+                  data.stack.map((item, index) => (
+                    <span>
+                      {' '}
+                      "{item}"{index < data.stack.length - 1 ? ', ' : ''}
+                    </span>
+                  ))
+                } ]
+              </div>
+            </div>
           </div>
-        )
-      }{
-        data.demoUrl && (
-          <div class="spec-row">
-            <>
-              <dt class="mono">DEMO</dt>
-              <dd>
-                <a href={data.demoUrl} rel="noreferrer">
-                  Demo site
-                </a>
-              </dd>
-            </>
-          </div>
-        )
-      }
-    </dl><article class="article-body"><Content /></article>
-  </div></BaseLayout
->
+          <span class="json-brace">&#125;</span>
+        </div>
+      </section>
+
+      <article class="project-content article-body">
+        <Content />
+      </article>
+
+      <nav class="project-pagination" aria-label="Project navigation">
+        <a href="/projects/" class="project-nav-card">
+          <span class="mono">Previous Project</span>
+          <strong>All Projects</strong>
+        </a>
+        <a href="/projects/" class="project-nav-card project-nav-next">
+          <span class="mono">Next Project</span>
+          <strong>Explore Projects</strong>
+        </a>
+      </nav>
+    </div>
+  </main>
+</BaseLayout>
