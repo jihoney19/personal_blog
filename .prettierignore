@@ -1,0 +1,7 @@
+.astro/
+dist/
+node_modules/
+bak/
+docs/
+AGENTS.md
+README.md

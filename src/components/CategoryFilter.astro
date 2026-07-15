@@ -1,0 +1,41 @@
+---
+const { categories = [] }: { categories?: string[] } = Astro.props;
+---
+
+{
+  categories.length > 0 && (
+    <div class="filter-tabs" data-category-filter aria-label="카테고리 필터">
+      <button class="filter-tab" type="button" data-filter="all" aria-pressed="true">
+        전체
+      </button>
+      {categories.map((category) => (
+        <button class="filter-tab" type="button" data-filter={category}>
+          {category}
+        </button>
+      ))}
+    </div>
+  )
+}
+<p class="filter-empty" data-filter-empty role="status" hidden>
+  선택한 카테고리에 게시글이 없습니다. 전체 글을 확인해 보세요.
+</p>
+<script is:inline>
+  const filterRoot = document.querySelector('[data-category-filter]');
+  filterRoot?.querySelectorAll('[data-filter]').forEach((button) =>
+    button.addEventListener('click', () => {
+      const category = button.getAttribute('data-filter');
+      filterRoot
+        .querySelectorAll('[data-filter]')
+        .forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      const rows = Array.from(document.querySelectorAll('[data-post-category]'));
+      let visibleCount = 0;
+      rows.forEach((row) => {
+        const visible = category === 'all' || row.getAttribute('data-post-category') === category;
+        row.toggleAttribute('hidden', !visible);
+        if (visible) visibleCount += 1;
+      });
+      const emptyState = document.querySelector('[data-filter-empty]');
+      if (emptyState) emptyState.toggleAttribute('hidden', visibleCount !== 0);
+    }),
+  );
+</script>

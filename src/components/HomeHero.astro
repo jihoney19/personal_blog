@@ -1,0 +1,12 @@
+---
+import { site } from '../data/site';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <code class="mono">$ whoami</code>
+  <h1 id="hero-title">{site.heroTitle}</h1>
+  <p>{site.heroDescription}</p>
+  <p class="mono" aria-label="기술 스택">
+    ────────────────────────────────────────<br />{site.heroStack.join(' · ')}
+  </p>
+</section>

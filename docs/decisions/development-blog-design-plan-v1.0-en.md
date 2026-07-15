@@ -9,18 +9,18 @@
 | Target | Local MVP for an Astro-based personal development blog |
 | Source documents | `../planning/development-blog-plan-en.md`, `DESIGN-opencode.ai.md` |
 | Design standard | Adapt OpenCode.ai's terminal aesthetic for a Korean development blog with a softer application |
-| Implementation prerequisite | After this document is approved, finalize screen mockups and `AGENTS.md` before implementation begins |
+| Implementation prerequisite | Approve the screen wireframes, key visual mockups, and `AGENTS.md` before implementation begins |
 
 This document defines colors, fonts, layouts, responsive rules, component states, and screen composition. Service goals, content data structures, and feature scope follow the service and feature planning document, while implementation procedures and QA commands are defined separately in `AGENTS.md`.
 
-### 0.1 Cross-Document Alignment Notes
+### 0.1 Cross-Document Alignment Status
 
-The following decisions were refined or changed from the service and feature planning draft during item-by-item approval. They must also be synchronized with the next version of the service and feature planning document.
+The following decisions were refined during item-by-item design approval and are now synchronized with the service and feature planning document.
 
 - Categories are technical topics such as `AI Agents`, `Frontend`, `Backend`, and `Astro`, not post formats such as `Learning Notes`, `Problem Solving`, `Technical Articles`, and `Project Retrospectives`.
 - The current MVP excludes email and contact features and provides only a GitHub link as an external contact method.
 
-Until the two documents are synchronized, apply the decisions in this design document, which were agreed with the user later, for the items above.
+The service plan, this design plan, and `AGENTS.md` therefore use the same classification and external-contact rules. This section remains as the decision rationale rather than an override.
 
 ---
 
@@ -531,6 +531,10 @@ The target level is WCAG 2.2 AA.
 
 Review the following screens as wireframes and visual mockups before implementation.
 
+The versioned low-fidelity deliverable is documented in [`development-blog-wireframes-v1.0-en.md`](../design/development-blog-wireframes-v1.0-en.md). It defines structural placeholders only; it does not approve or publish personal facts or production posts.
+
+The key high-fidelity light/dark and desktop/mobile states are documented in [`development-blog-high-fidelity-mockups-v1.0-en.md`](../design/development-blog-high-fidelity-mockups-v1.0-en.md). They remain subject to final user approval and Figma synchronization.
+
 1. Home — initial state with no posts
 2. Home — state with posts and category filters
 3. Post detail — desktop light mode
@@ -593,13 +597,11 @@ The design stage is ready for approval when all of the following conditions are 
 
 ## 15. Next Steps
 
-1. Perform the final review of this design planning document.
-2. Create wireframes for each screen.
-3. Create key light/dark and desktop/mobile mockups.
-4. Obtain user approval for the design stage.
-5. Create and approve a separate `AGENTS.md`.
-6. Implement the local Astro MVP.
-7. Perform responsive, accessibility, and functional QA.
+1. Synchronize the prepared key high-fidelity states into the existing Figma file.
+2. Review and approve the ten-screen structures and five key visual mockups.
+3. Obtain final user approval for the design stage.
+4. Implement the local Astro MVP according to the approved `AGENTS.md`.
+5. Perform responsive, accessibility, and functional QA.
 
 ---
 

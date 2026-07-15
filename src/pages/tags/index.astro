@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { toSlug } from '../../lib/slug';
+const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))]
+  .map((tag) => ({ tag, count: posts.filter((post) => post.data.tags.includes(tag)).length }))
+  .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+---
+
+<BaseLayout title="Tags" currentPath="/tags/"
+  ><div class="container section">
+    <p class="mono">$ grep -h tags posts/*</p><h1 class="page-title">Tags</h1>{
+      tags.length ? (
+        <div class="post-list">
+          {tags.map((item) => (
+            <article class="post-row">
+              <h2>
+                <a href={`/tags/${toSlug(item.tag)}/`}>{item.tag}</a>
+              </h2>
+              <p>{item.count}개의 게시글</p>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>아직 태그가 없습니다.</p>
+        </div>
+      )
+    }
+  </div></BaseLayout
+>

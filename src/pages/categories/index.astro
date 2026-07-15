@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortPosts } from '../../lib/posts';
+import { toSlug } from '../../lib/slug';
+const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
+const counts = [...new Set(posts.map((post) => post.data.category))].sort().map((category) => ({
+  category,
+  posts: sortPosts(posts.filter((post) => post.data.category === category)),
+}));
+---
+
+<BaseLayout title="Categories" currentPath="/categories/"
+  ><div class="container section">
+    <p class="mono">$ find posts -type d</p><h1 class="page-title">Categories</h1>{
+      counts.length ? (
+        <div class="post-list">
+          {counts.map((item) => (
+            <article class="post-row">
+              <h2>
+                <a
+                  href={
+                    item.posts.length === 1
+                      ? `/posts/${item.posts[0].id}/`
+                      : `/categories/${toSlug(item.category)}/`
+                  }
+                >
+                  {item.category}
+                </a>
+              </h2>
+              <p>{item.posts.length}개의 게시글</p>
+              {item.posts.length === 1 && (
+                <p>
+                  <a href={`/categories/${toSlug(item.category)}/`}>카테고리의 모든 글 보기</a>
+                </p>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>아직 분류할 게시글이 없습니다.</p>
+        </div>
+      )
+    }
+  </div></BaseLayout
+>

@@ -1,0 +1,57 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+const { project } = Astro.props;
+const { Content } = await render(project);
+const data = project.data;
+---
+
+<BaseLayout title={data.title} currentPath="/projects/"
+  ><div class="container section">
+    <p class="mono">$ cat project.json</p><h1 class="page-title">{data.title}</h1><p>
+      {data.summary}
+    </p><dl class="spec-sheet">
+      <div class="spec-row">
+        <dt class="mono">STATUS</dt><dd class="status">{data.status}</dd>
+      </div><div class="spec-row">
+        <dt class="mono">PERIOD</dt><dd>
+          {data.startedAt}{data.endedAt ? ` — ${data.endedAt}` : ' — 진행 중'}
+        </dd>
+      </div><div class="spec-row"><dt class="mono">ROLE</dt><dd>{data.role}</dd></div><div
+        class="spec-row"
+      >
+        <dt class="mono">STACK</dt><dd>{data.stack.join(' · ')}</dd>
+      </div>{
+        data.repoUrl && (
+          <div class="spec-row">
+            <>
+              <dt class="mono">GITHUB</dt>
+              <dd>
+                <a href={data.repoUrl} rel="noreferrer">
+                  Repository
+                </a>
+              </dd>
+            </>
+          </div>
+        )
+      }{
+        data.demoUrl && (
+          <div class="spec-row">
+            <>
+              <dt class="mono">DEMO</dt>
+              <dd>
+                <a href={data.demoUrl} rel="noreferrer">
+                  Demo site
+                </a>
+              </dd>
+            </>
+          </div>
+        )
+      }
+    </dl><article class="article-body"><Content /></article>
+  </div></BaseLayout
+>

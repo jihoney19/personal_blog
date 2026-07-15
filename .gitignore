@@ -4,6 +4,10 @@ node_modules/
 # Build outputs
 dist/
 build/
+.astro/
+coverage/
+playwright-report/
+test-results/
 
 # Environment files
 .env

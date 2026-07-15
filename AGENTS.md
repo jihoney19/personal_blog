@@ -21,7 +21,7 @@ Each document has the following responsibility.
 - Design plan: visual system, layout, responsive behavior, component states, and accessibility presentation
 - `AGENTS.md`: workflow, code and file rules, technology choices, testing, and result reporting
 
-Do not arbitrarily combine conflicting requirements. The user's latest instructions take highest priority. Between the two planning documents, prioritize the latest decisions specified in section `0.1 Cross-Document Alignment Notes` of the design document. Therefore, the current MVP applies the following rules.
+Do not arbitrarily combine conflicting requirements. The user's latest instructions take highest priority. The two planning documents were synchronized on 2026-07-15, and section `0.1 Cross-Document Alignment Status` of the design document records the rationale for the following current MVP rules.
 
 - Content type is the format of a post, while categories are technical topics such as `AI Agents`, `Frontend`, `Backend`, and `Astro`.
 - Use only GitHub as an external contact method when an actual URL has been provided. Exclude email and contact features.

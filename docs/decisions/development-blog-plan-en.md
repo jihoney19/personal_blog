@@ -119,7 +119,7 @@ About
 ├── Areas of interest and technology stack
 ├── How AI agents are used
 ├── Featured projects and posts
-└── GitHub and contact methods
+└── GitHub link, only when an actual URL is available
 ```
 
 ### 3.1 Top Navigation
@@ -158,13 +158,12 @@ About
 - Display the number of posts assigned to each category and tag.
 - Do not generate pages for categories or tags with no posts.
 
-Initial category candidates are as follows.
+Initial technical-topic category candidates are as follows.
 
-- Learning Notes
-- Problem Solving
-- Technical Articles
-- Project Retrospectives
 - AI Agents
+- Frontend
+- Backend
+- Astro
 
 ### 4.4 Project List
 
@@ -199,8 +198,9 @@ The `Personal Development Blog` project is marked as `In Progress` during local 
 
 - Explain frontend, backend, full-stack, and AI/agent interests as one coherent narrative.
 - Demonstrate capabilities through projects and related posts instead of merely listing technology names.
-- Prefer a contact button rather than displaying an email address directly on the page.
-- Obtain the user's actual name, photo, introduction, GitHub URL, and contact details during the design stage.
+- Provide only a GitHub link as the external contact method, and render it only when an actual URL is available.
+- Do not implement email or other contact features in the current MVP.
+- Obtain the user's actual name, photo, introduction, and GitHub URL before publishing those values.
 
 ---
 
@@ -288,7 +288,7 @@ When a link value is unavailable, hide the corresponding UI instead of displayin
 - Project detail: `/projects/{slug}`
 - Category: `/categories/{category-slug}`
 - Tag: `/tags/{tag-slug}`
-- Korean category and tag names use English slugs in URLs and Korean display names in the UI. (Example: `Learning Notes` → `/categories/learning-notes`)
+- Category and tag display labels may use Korean or established English technical names, while their URLs use English slugs. (Example: `AI Agents` → `/categories/ai-agents`)
 - Once a slug has been deployed, it should not be changed arbitrarily.
 
 ### 6.4 Reading-Time Calculation

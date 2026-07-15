@@ -1,0 +1,32 @@
+:root {
+  --canvas: #fdfcfc;
+  --ink: #201d1d;
+  --body: #424245;
+  --mute: #646262;
+  --surface-soft: #f8f7f7;
+  --surface-card: #f1eeee;
+  --hairline: rgba(15, 0, 0, 0.12);
+  --hairline-strong: #646262;
+  --accent: #005fcc;
+  --success: #18794e;
+  --warning: #8a4b00;
+  --danger: #b42318;
+  --content-wide: 1100px;
+  --content: 960px;
+  --body-width: 720px;
+}
+
+[data-theme='dark'] {
+  --canvas: #201d1d;
+  --ink: #fdfcfc;
+  --body: #d5d2d2;
+  --mute: #aaa6a6;
+  --surface-soft: #2a2626;
+  --surface-card: #302c2c;
+  --hairline: rgba(255, 255, 255, 0.14);
+  --hairline-strong: #aaa6a6;
+  --accent: #6ea8ff;
+  --success: #32d583;
+  --warning: #f5a524;
+  --danger: #ff6b6b;
+}
