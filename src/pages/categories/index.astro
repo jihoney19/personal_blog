@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sortPosts } from '../../lib/posts';
 import { toSlug } from '../../lib/slug';
+import { sitePath } from '../../lib/paths';
 const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
 const counts = [...new Set(posts.map((post) => post.data.category))].sort().map((category) => ({
   category,
@@ -21,8 +22,8 @@ const counts = [...new Set(posts.map((post) => post.data.category))].sort().map(
                 <a
                   href={
                     item.posts.length === 1
-                      ? `/posts/${item.posts[0].id}/`
-                      : `/categories/${toSlug(item.category)}/`
+                      ? sitePath(`/posts/${item.posts[0].id}/`)
+                      : sitePath(`/categories/${toSlug(item.category)}/`)
                   }
                 >
                   {item.category}
@@ -31,7 +32,9 @@ const counts = [...new Set(posts.map((post) => post.data.category))].sort().map(
               <p>{item.posts.length}개의 게시글</p>
               {item.posts.length === 1 && (
                 <p>
-                  <a href={`/categories/${toSlug(item.category)}/`}>카테고리의 모든 글 보기</a>
+                  <a href={sitePath(`/categories/${toSlug(item.category)}/`)}>
+                    카테고리의 모든 글 보기
+                  </a>
                 </p>
               )}
             </article>

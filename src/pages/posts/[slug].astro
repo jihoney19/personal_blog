@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { readingTime, sortPosts } from '../../lib/posts';
 import { toSlug } from '../../lib/slug';
+import { sitePath } from '../../lib/paths';
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
   return posts
@@ -50,20 +51,22 @@ const next = ordered[index - 1];
           {
             data.tags.map((tag) => (
               <li class="tag">
-                <a href={`/tags/${toSlug(tag)}/`}>#{tag}</a>
+                <a href={sitePath(`/tags/${toSlug(tag)}/`)}>#{tag}</a>
               </li>
             ))
           }
         </ul><nav aria-label="게시글 이동" class="footer-nav">
           {
             previous && (
-              <a href={`/posts/${previous.id}/`}>
+              <a href={sitePath(`/posts/${previous.id}/`)}>
                 ← {Object.assign({ title: '' }, previous.data).title}
               </a>
             )
           }{
             next && (
-              <a href={`/posts/${next.id}/`}>{Object.assign({ title: '' }, next.data).title} →</a>
+              <a href={sitePath(`/posts/${next.id}/`)}>
+                {Object.assign({ title: '' }, next.data).title} →
+              </a>
             )
           }
         </nav>

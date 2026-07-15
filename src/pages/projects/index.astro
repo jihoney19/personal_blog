@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sitePath } from '../../lib/paths';
 const projects = await getCollection('projects');
 ---
 
@@ -12,7 +13,7 @@ const projects = await getCollection('projects');
           <article class="post-row">
             <>
               <h2>
-                <a href={`/projects/${project.id}/`}>{project.data.title}</a>
+                <a href={sitePath(`/projects/${project.id}/`)}>{project.data.title}</a>
               </h2>
               <p>{project.data.summary}</p>
               <div class="meta">

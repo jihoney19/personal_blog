@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
 import { sortPosts } from '../../lib/posts';
 import { toSlug } from '../../lib/slug';
+import { sitePath } from '../../lib/paths';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
@@ -21,7 +22,9 @@ const filteredPosts = sortPosts(posts.filter((post) => post.data.category === ca
 <BaseLayout title={category} currentPath="/categories/">
   <div class="container section">
     <nav class="breadcrumbs" aria-label="카테고리 위치">
-      <a href="/categories/">Categories</a><span aria-hidden="true">/</span><span>{category}</span>
+      <a href={sitePath('/categories/')}>Categories</a><span aria-hidden="true">/</span><span
+        >{category}</span
+      >
     </nav>
     <p class="mono">$ find posts -category {category}</p>
     <h1 class="page-title">{category}</h1>
@@ -29,6 +32,6 @@ const filteredPosts = sortPosts(posts.filter((post) => post.data.category === ca
     <div class="post-list">
       {filteredPosts.map((post) => <PostRow post={post} />)}
     </div>
-    <p><a href="/categories/">← 모든 카테고리</a></p>
+    <p><a href={sitePath('/categories/')}>← 모든 카테고리</a></p>
   </div>
 </BaseLayout>

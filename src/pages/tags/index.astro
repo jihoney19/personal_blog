@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { toSlug } from '../../lib/slug';
+import { sitePath } from '../../lib/paths';
 const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
 const tags = [...new Set(posts.flatMap((post) => post.data.tags))]
   .map((tag) => ({ tag, count: posts.filter((post) => post.data.tags.includes(tag)).length }))
@@ -16,7 +17,7 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))]
           {tags.map((item) => (
             <article class="post-row">
               <h2>
-                <a href={`/tags/${toSlug(item.tag)}/`}>{item.tag}</a>
+                <a href={sitePath(`/tags/${toSlug(item.tag)}/`)}>{item.tag}</a>
               </h2>
               <p>{item.count}개의 게시글</p>
             </article>

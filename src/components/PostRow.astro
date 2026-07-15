@@ -1,12 +1,16 @@
 ---
 import { readingTime } from '../lib/posts';
 import { toSlug } from '../lib/slug';
+import { sitePath } from '../lib/paths';
 const { post } = Astro.props;
 const data = post.data;
 ---
 
 <article class="post-row" data-post-category={data.category}>
-  <h3><a href={`/posts/${post.id}/`}><span class="mono">[{data.type}]</span> {data.title}</a></h3>
+  <h3>
+    <a href={sitePath(`/posts/${post.id}/`)}><span class="mono">[{data.type}]</span> {data.title}</a
+    >
+  </h3>
   <div class="meta mono">
     <span>{data.publishedAt}</span><span>{data.category}</span><span
       >읽는 시간 {readingTime(post.body ?? '')}분</span
@@ -16,7 +20,7 @@ const data = post.data;
     {
       data.tags.map((tag: string) => (
         <li class="tag">
-          <a href={`/tags/${toSlug(tag)}/`}>#{tag}</a>
+          <a href={sitePath(`/tags/${toSlug(tag)}/`)}>#{tag}</a>
         </li>
       ))
     }

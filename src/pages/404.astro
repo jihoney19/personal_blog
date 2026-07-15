@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { sitePath } from '../lib/paths';
 ---
 
 <BaseLayout title="Page not found"
   ><div class="container not-found">
     <p class="mono">[x] Page not found</p><h1 class="page-title">
       요청한 페이지를 찾을 수 없습니다.
-    </h1><a href="/">Home으로 돌아가기</a>
+    </h1><a href={sitePath('/')}>Home으로 돌아가기</a>
   </div></BaseLayout
 >

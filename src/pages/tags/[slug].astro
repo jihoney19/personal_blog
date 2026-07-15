@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostRow from '../../components/PostRow.astro';
 import { sortPosts } from '../../lib/posts';
 import { toSlug } from '../../lib/slug';
+import { sitePath } from '../../lib/paths';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
@@ -18,7 +19,7 @@ const filteredPosts = sortPosts(posts.filter((post) => post.data.tags.includes(t
 <BaseLayout title={`#${tag}`} currentPath="/tags/">
   <div class="container section">
     <nav class="breadcrumbs" aria-label="태그 위치">
-      <a href="/tags/">Tags</a><span aria-hidden="true">/</span><span>#{tag}</span>
+      <a href={sitePath('/tags/')}>Tags</a><span aria-hidden="true">/</span><span>#{tag}</span>
     </nav>
     <p class="mono">$ grep -l #{tag} posts/*</p>
     <h1 class="page-title">#{tag}</h1>
@@ -26,6 +27,6 @@ const filteredPosts = sortPosts(posts.filter((post) => post.data.tags.includes(t
     <div class="post-list">
       {filteredPosts.map((post) => <PostRow post={post} />)}
     </div>
-    <p><a href="/tags/">← 모든 태그</a></p>
+    <p><a href={sitePath('/tags/')}>← 모든 태그</a></p>
   </div>
 </BaseLayout>

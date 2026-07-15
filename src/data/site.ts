@@ -7,9 +7,10 @@ export const site = {
 };
 
 export const navigation = [
-  { label: 'Home', href: '/' },
-  { label: 'Categories', href: '/categories/' },
-  { label: 'Tags', href: '/tags/' },
-  { label: 'Projects', href: '/projects/' },
-  { label: 'About', href: '/about/' },
+  { label: 'Home', href: sitePath('/') },
+  { label: 'Categories', href: sitePath('/categories/') },
+  { label: 'Tags', href: sitePath('/tags/') },
+  { label: 'Projects', href: sitePath('/projects/') },
+  { label: 'About', href: sitePath('/about/') },
 ];
+import { sitePath } from '../lib/paths';
