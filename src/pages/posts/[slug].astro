@@ -2,7 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { readingTime, sortPosts } from '../../lib/posts';
-import { toSlug } from '../../lib/slug';
+import { toHeadingId, toSlug } from '../../lib/slug';
 import { sitePath } from '../../lib/paths';
 
 export async function getStaticPaths() {
@@ -23,7 +23,7 @@ const tocItems = [...(post.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gmu)].map(
   ([, hashes, heading]) => ({
     level: hashes.length,
     title: heading.trim(),
-    id: toSlug(heading.trim()),
+    id: toHeadingId(heading.trim()),
   }),
 );
 const related = ordered

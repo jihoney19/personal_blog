@@ -101,8 +101,14 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
           <span class="mono">{site.name}</span>
           <nav class="footer-nav" aria-label="푸터 탐색">
             <a href={sitePath('/projects/')}>Projects</a><a href={sitePath('/about/')}>About</a>
+            {
+              site.githubUrl && (
+                <a href={site.githubUrl} target="_blank" rel="noreferrer">
+                  GitHub
+                </a>
+              )
+            }
           </nav>
-          <span>GitHub는 검증된 실제 URL이 있을 때만 표시됩니다.</span>
         </div>
       </footer>
     </div>

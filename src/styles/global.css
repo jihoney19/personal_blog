@@ -239,9 +239,6 @@ main {
 .footer-inner .footer-nav {
   margin-left: auto;
 }
-.footer-inner > span:last-child {
-  text-align: right;
-}
 .footer-nav {
   display: flex;
   gap: 16px;
@@ -657,6 +654,9 @@ main {
     gap: 8px;
     justify-self: end;
   }
+  .site-nav {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
   .mobile-actions .theme-button {
     width: max-content;
     min-height: 44px;
@@ -692,9 +692,6 @@ main {
   }
   .footer-inner .footer-nav {
     margin-left: 0;
-  }
-  .footer-inner > span:last-child {
-    text-align: left;
   }
 }
 @media (prefers-reduced-motion: reduce) {
