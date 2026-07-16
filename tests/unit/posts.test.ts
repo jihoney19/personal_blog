@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readingTime, sortPosts } from '../../src/lib/posts';
+import { getAdjacentPosts, readingTime, sortPosts } from '../../src/lib/posts';
 import { toHeadingId } from '../../src/lib/slug';
 
 describe('post utilities', () => {
@@ -15,6 +15,21 @@ describe('post utilities', () => {
   it('returns at least one minute for empty content', () => {
     expect(readingTime('')).toBe(1);
     expect(readingTime('one '.repeat(221))).toBe(2);
+  });
+
+  it('keeps previous and next posts within the current log type', () => {
+    const posts = [
+      { id: 'learning-new', data: { publishedAt: '2026-07-16', type: 'Learning Notes' } },
+      { id: 'article-new', data: { publishedAt: '2026-07-16', type: 'Technical Articles' } },
+      { id: 'learning-current', data: { publishedAt: '2026-07-15', type: 'Learning Notes' } },
+      { id: 'article-old', data: { publishedAt: '2026-07-14', type: 'Technical Articles' } },
+      { id: 'learning-old', data: { publishedAt: '2026-07-14', type: 'Learning Notes' } },
+    ];
+
+    const adjacent = getAdjacentPosts(posts, 'learning-current', 'Learning Notes');
+
+    expect(adjacent.previous?.id).toBe('learning-old');
+    expect(adjacent.next?.id).toBe('learning-new');
   });
 
   it('matches the rendered heading ID rule for punctuation', () => {

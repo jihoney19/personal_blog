@@ -3,7 +3,7 @@ title: LLM이란 무엇인가
 description: 대규모 언어 모델이 텍스트를 이해하고 생성하는 기본 원리와 한계를 쉽게 정리합니다.
 publishedAt: '2026-07-16'
 type: Learning Notes
-category: AI Agents
+category: AI
 tags:
   - LLM
   - AI

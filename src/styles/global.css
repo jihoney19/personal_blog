@@ -692,6 +692,10 @@ main {
   .menu-panel a {
     color: var(--body);
   }
+  .menu-panel a[aria-current='page'] {
+    color: var(--accent);
+    font-weight: 600;
+  }
   .section {
     padding-block: 48px;
   }
@@ -810,7 +814,8 @@ main,
 }
 .post-navigation-children {
   margin: 2px 0 4px !important;
-  padding-left: 12px !important;
+  padding-left: 16px !important;
+  border-left: 1px solid var(--hairline);
 }
 .post-navigation-children a {
   padding-block: 4px;

@@ -13,17 +13,6 @@ export const site = {
   githubUrl: 'https://github.com/jihoney19',
 };
 
-export const logNavigation: NavigationItem[] = [
-  { label: 'All Logs', href: sitePath('/logs/') },
-  { label: 'Technical Notes', href: sitePath('/logs/technical-articles/') },
-  { label: 'Learning Notes', href: sitePath('/logs/learning-notes/') },
-  { label: 'Project Retrospectives', href: sitePath('/logs/project-retrospectives/') },
-];
-
 export const navigation: NavigationItem[] = [
-  { label: 'Home', href: sitePath('/') },
-  { label: 'Logs', href: sitePath('/logs/'), children: logNavigation },
-  { label: 'Topics', href: sitePath('/categories/') },
-  { label: 'Projects', href: sitePath('/projects/') },
-  { label: 'About', href: sitePath('/about/') },
+  { label: 'Project', href: sitePath('/projects/') },
 ];

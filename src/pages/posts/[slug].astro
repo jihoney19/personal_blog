@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { readingTime, sortPosts } from '../../lib/posts';
+import { getAdjacentPosts, readingTime, sortPosts } from '../../lib/posts';
 import { toHeadingId, toSlug } from '../../lib/slug';
 import { sitePath } from '../../lib/paths';
 
@@ -16,9 +16,7 @@ const { post, posts } = Astro.props;
 const { Content } = await render(post);
 const data = post.data;
 const ordered = sortPosts(posts.filter((item) => !item.data.draft));
-const index = ordered.findIndex((item) => item.id === post.id);
-const previous = ordered[index + 1];
-const next = ordered[index - 1];
+const { previous, next } = getAdjacentPosts(ordered, post.id, data.type);
 const tocItems = [...(post.body ?? '').matchAll(/^(#{2,3})\s+(.+)$/gmu)].map(
   ([, hashes, heading]) => ({
     level: hashes.length,
@@ -39,7 +37,10 @@ const related = ordered
   .map(({ item }) => item);
 ---
 
-<BaseLayout title={data.title} activeCategory={data.category}>
+<BaseLayout
+  title={data.title}
+  activeCategory={data.category}
+>
   <div class="container section post-page">
     <div class="article-layout">
       <aside class="article-toc" aria-label="Table of contents">

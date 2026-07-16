@@ -19,7 +19,7 @@ const { category, posts } = Astro.props;
 const filteredPosts = sortPosts(posts.filter((post) => post.data.category === category));
 ---
 
-<BaseLayout title={category} currentPath="/categories/" activeCategory={category}>
+<BaseLayout title={category} currentPath={sitePath(`/categories/${toSlug(category)}/`)}>
   <div class="container category-workspace section">
     <div class="category-content">
       <nav class="breadcrumbs" aria-label="카테고리 위치">

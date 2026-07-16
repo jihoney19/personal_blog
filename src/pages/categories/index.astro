@@ -5,10 +5,10 @@ import { sortPosts } from '../../lib/posts';
 import { toSlug } from '../../lib/slug';
 import { sitePath } from '../../lib/paths';
 const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
-const counts = [...new Set(posts.map((post) => post.data.category))].sort().map((category) => ({
-  category,
-  posts: sortPosts(posts.filter((post) => post.data.category === category)),
-}));
+const counts = [...new Set(posts.map((post) => post.data.category))].sort().map((category) => {
+  const categoryPosts = sortPosts(posts.filter((post) => post.data.category === category));
+  return { category, posts: categoryPosts };
+});
 ---
 
 <BaseLayout title="Categories" currentPath="/categories/"

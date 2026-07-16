@@ -9,7 +9,7 @@ const postTypes = [
   'Technical Articles',
   'Project Retrospectives',
 ] as const;
-const categories = ['AI Agents', 'Frontend', 'Backend', 'Astro'] as const;
+const categories = ['AI', 'Frontend', 'Backend', 'Astro'] as const;
 
 const posts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),

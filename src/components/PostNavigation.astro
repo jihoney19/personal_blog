@@ -1,7 +1,7 @@
 ---
-import { toSlug } from '../lib/slug';
 import { sitePath } from '../lib/paths';
-import { navigation, site } from '../data/site';
+import { site } from '../data/site';
+import { buildSiteNavigation } from '../lib/topic-navigation';
 
 type NavigationPost = {
   data: {
@@ -13,45 +13,57 @@ type NavigationPost = {
 const {
   posts = [],
   currentPath = Astro.url.pathname,
-}: { posts?: NavigationPost[]; currentPath?: string } = Astro.props;
-const topicNavigation = [
-  ...new Set(posts.filter((post) => !post.data.draft).map((post) => post.data.category)),
-].sort().map((category) => ({
-  label: category,
-  href: sitePath(`/categories/${toSlug(category)}/`),
-}));
+  activeCategory,
+}: {
+  posts?: NavigationPost[];
+  currentPath?: string;
+  activeCategory?: string;
+} = Astro.props;
+const siteNavigation = buildSiteNavigation(posts);
 
 ---
 
 <aside class="post-navigation" aria-label="Site navigation">
   <a class="post-navigation-brand mono" href={sitePath('/')}>{site.name}</a>
   <nav class="post-global-navigation" aria-label="Site navigation">
-    <p class="post-navigation-title mono">NAVIGATION</p>
+    <p class="post-navigation-title mono">MENU</p>
     <ul>
       {
-        navigation.map((item) => {
-          const children = item.children ?? (item.label === 'Topics' ? topicNavigation : undefined);
-          const isCurrent =
-            currentPath === item.href ||
-            (item.href !== sitePath('/') && currentPath.startsWith(item.href)) ||
-            children?.some((child) => currentPath === child.href);
+        siteNavigation.map((item) => {
+          const children = item.children;
+          const isCurrent = currentPath === item.href || activeCategory === item.label;
           return (
             <li class:list={{ 'is-active': isCurrent }}>
               <a href={item.href} aria-current={isCurrent ? 'page' : undefined}>
-                <span aria-hidden="true">{isCurrent ? '-' : '>'}</span>
                 {item.label}
               </a>
               {
                 children && (
                   <ul class="post-navigation-children">
                     {children.map((child) => {
-                      const isChildCurrent = currentPath === child.href;
+                      const isCurrentChild = currentPath === child.href;
                       return (
-                        <li class:list={{ 'is-active': isChildCurrent }}>
-                          <a href={child.href} aria-current={isChildCurrent ? 'page' : undefined}>
-                            <span aria-hidden="true">{isChildCurrent ? '-' : '>'}</span>
+                        <li class:list={{ 'is-active': isCurrentChild }}>
+                          <a href={child.href} aria-current={isCurrentChild ? 'page' : undefined}>
                             {child.label}
                           </a>
+                          {child.children && (
+                            <ul class="post-navigation-children post-navigation-grandchildren">
+                              {child.children.map((grandchild) => {
+                                const isCurrentGrandchild = currentPath === grandchild.href;
+                                return (
+                                  <li class:list={{ 'is-active': isCurrentGrandchild }}>
+                                    <a
+                                      href={grandchild.href}
+                                      aria-current={isCurrentGrandchild ? 'page' : undefined}
+                                    >
+                                      {grandchild.label}
+                                    </a>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          )}
                         </li>
                       );
                     })}
