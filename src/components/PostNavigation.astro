@@ -1,0 +1,75 @@
+---
+import { toSlug } from '../lib/slug';
+import { sitePath } from '../lib/paths';
+import { navigation, site } from '../data/site';
+
+type NavigationPost = {
+  data: {
+    category: string;
+    draft?: boolean;
+  };
+};
+
+const {
+  posts = [],
+  currentPath = Astro.url.pathname,
+}: { posts?: NavigationPost[]; currentPath?: string } = Astro.props;
+const topicNavigation = [
+  ...new Set(posts.filter((post) => !post.data.draft).map((post) => post.data.category)),
+].sort().map((category) => ({
+  label: category,
+  href: sitePath(`/categories/${toSlug(category)}/`),
+}));
+
+---
+
+<aside class="post-navigation" aria-label="Site navigation">
+  <a class="post-navigation-brand mono" href={sitePath('/')}>{site.name}</a>
+  <nav class="post-global-navigation" aria-label="Site navigation">
+    <p class="post-navigation-title mono">NAVIGATION</p>
+    <ul>
+      {
+        navigation.map((item) => {
+          const children = item.children ?? (item.label === 'Topics' ? topicNavigation : undefined);
+          const isCurrent =
+            currentPath === item.href ||
+            (item.href !== sitePath('/') && currentPath.startsWith(item.href)) ||
+            children?.some((child) => currentPath === child.href);
+          return (
+            <li class:list={{ 'is-active': isCurrent }}>
+              <a href={item.href} aria-current={isCurrent ? 'page' : undefined}>
+                <span aria-hidden="true">{isCurrent ? '-' : '>'}</span>
+                {item.label}
+              </a>
+              {
+                children && (
+                  <ul class="post-navigation-children">
+                    {children.map((child) => {
+                      const isChildCurrent = currentPath === child.href;
+                      return (
+                        <li class:list={{ 'is-active': isChildCurrent }}>
+                          <a href={child.href} aria-current={isChildCurrent ? 'page' : undefined}>
+                            <span aria-hidden="true">{isChildCurrent ? '-' : '>'}</span>
+                            {child.label}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )
+              }
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+  <button
+    class="post-navigation-theme theme-button"
+    type="button"
+    data-theme-toggle
+    aria-label="Switch theme"
+  >
+    <span class="theme-label mono">MODE: LIGHT</span>
+  </button>
+</aside>

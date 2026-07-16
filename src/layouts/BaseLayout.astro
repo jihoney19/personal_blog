@@ -1,8 +1,11 @@
 ---
 import '../styles/global.css';
+import { getCollection } from 'astro:content';
 import { navigation, site } from '../data/site';
+import PostNavigation from '../components/PostNavigation.astro';
 import { sitePath } from '../lib/paths';
 const basePath = import.meta.env.BASE_URL.replace(/\/$/u, '');
+const navigationPosts = (await getCollection('posts')).filter((post) => !post.data.draft);
 const {
   title = site.name,
   description = site.description,
@@ -37,6 +40,10 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
   <body>
     <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
     <div class="site-shell">
+      <PostNavigation
+        posts={navigationPosts}
+        currentPath={normalizedCurrentPath}
+      />
       <header class="site-header">
         <div class="container site-nav">
           <a class="brand mono" href={sitePath('/')}>{site.name}</a>
@@ -83,14 +90,34 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
         >
           {
             navigation.map((item) => (
-              <a
-                href={item.href}
-                aria-current={
-                  normalizedCurrentPath === item.href.replace(basePath, '') ? 'page' : undefined
+              <div class="mobile-menu-group">
+                <a
+                  href={item.href}
+                  aria-current={
+                    normalizedCurrentPath === item.href.replace(basePath, '') ? 'page' : undefined
+                  }
+                >
+                  {item.label}
+                </a>
+                {
+                  item.children && (
+                    <div class="mobile-menu-children">
+                      {item.children.map((child) => (
+                        <a
+                          href={child.href}
+                          aria-current={
+                            normalizedCurrentPath === child.href.replace(basePath, '')
+                              ? 'page'
+                              : undefined
+                          }
+                        >
+                          {child.label}
+                        </a>
+                      ))}
+                    </div>
+                  )
                 }
-              >
-                {item.label}
-              </a>
+              </div>
             ))
           }
         </nav>
@@ -116,10 +143,12 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
       const updateThemeLabels = () =>
         document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
           const dark = document.documentElement.dataset.theme === 'dark';
-          button.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
-          button.setAttribute('title', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
+          const current = dark ? 'DARK' : 'LIGHT';
+          const action = dark ? '라이트 모드로 전환' : '다크 모드로 전환';
+          button.setAttribute('aria-label', `현재 ${current} 모드 · ${action}`);
+          button.setAttribute('title', `현재 ${current} 모드 · ${action}`);
           const label = button.querySelector('.theme-label');
-          if (label) label.textContent = dark ? 'MODE: DARK' : 'MODE: LIGHT';
+          if (label) label.textContent = `MODE: ${current}`;
         });
       document.querySelectorAll('[data-theme-toggle]').forEach((button) =>
         button.addEventListener('click', () => {

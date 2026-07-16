@@ -4,15 +4,21 @@ const { categories = [] }: { categories?: string[] } = Astro.props;
 
 {
   categories.length > 0 && (
-    <div class="filter-tabs" data-category-filter aria-label="카테고리 필터">
-      <button class="filter-tab" type="button" data-filter="all" aria-pressed="true">
-        전체
-      </button>
-      {categories.map((category) => (
-        <button class="filter-tab" type="button" data-filter={category}>
-          {category}
+    <div class="category-filter">
+      <div class="filter-heading" aria-hidden="true">
+        <span class="mono">FILTER BY CATEGORY</span>
+        <span class="filter-heading-line" />
+      </div>
+      <div class="filter-tabs" data-category-filter role="group" aria-label="카테고리 필터">
+        <button class="filter-tab" type="button" data-filter="all" aria-pressed="true">
+          전체
         </button>
-      ))}
+        {categories.map((category) => (
+          <button class="filter-tab" type="button" data-filter={category} aria-pressed="false">
+            {category}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

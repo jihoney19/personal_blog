@@ -39,7 +39,7 @@ const related = ordered
   .map(({ item }) => item);
 ---
 
-<BaseLayout title={data.title}>
+<BaseLayout title={data.title} activeCategory={data.category}>
   <div class="container section post-page">
     <div class="article-layout">
       <aside class="article-toc" aria-label="Table of contents">

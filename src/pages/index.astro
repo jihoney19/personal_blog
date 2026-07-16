@@ -3,53 +3,52 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeHero from '../components/HomeHero.astro';
 import EmptyState from '../components/EmptyState.astro';
-import CategoryFilter from '../components/CategoryFilter.astro';
 import PostRow from '../components/PostRow.astro';
 import { sortPosts } from '../lib/posts';
 const posts = sortPosts((await getCollection('posts')).filter((post) => !post.data.draft));
-const categories = ['AI Agents', 'Frontend', 'Backend', 'Astro'];
 ---
 
 <BaseLayout currentPath="/" title="Home">
   <HomeHero />
-  <div class="container home-content">
-    <section class="home-section home-introduction" aria-labelledby="intro-title">
-      <header class="indexed-heading">
-        <h2 id="intro-title" class="mono"><span>01</span><span>/</span>INTRODUCTION</h2>
-        <span class="heading-line" aria-hidden="true"></span>
-      </header>
-      <p class="introduction-copy">
-        기술적 배움의 과정, 문제 해결의 기록, 그리고 실제 구동되는 서비스들을 기록하는 공간입니다.
-        단순한 코드의 나열을 넘어, AI와의 협업을 통해 아이디어가 현실화되는 과정을 아카이빙합니다.
-      </p>
-      <div class="signal-trace" aria-hidden="true">
-        <svg viewBox="0 0 1040 64" preserveAspectRatio="none" focusable="false">
-          <path
-            d="M0 52 H282 L318 34 L342 45 L396 40 L456 14 L570 40 L684 6 L698 13 L711 9 L820 52 H1040"
-          ></path>
-        </svg>
-      </div>
-    </section>
-    <section class="home-section latest-logs" aria-labelledby="latest-title">
-      <header class="indexed-heading">
-        <h2 id="latest-title" class="mono"><span>02</span><span>/</span>LATEST_LOGS</h2>
-        <span class="heading-line" aria-hidden="true"></span>
-      </header>
-      {
-        posts.length > 0 ? (
-          <>
-            <CategoryFilter categories={categories} />
-            <div class="post-list">
-              {posts.map((post) => (
-                <PostRow post={post} />
-              ))}
-            </div>
-          </>
-        ) : (
-          <EmptyState />
-        )
-      }
-    </section>
+  <div class="container home-workspace">
+    <div class="home-content">
+      <section class="home-section home-introduction" aria-labelledby="intro-title">
+        <header class="indexed-heading">
+          <h2 id="intro-title" class="mono"><span>01</span><span>/</span>INTRODUCTION</h2>
+          <span class="heading-line" aria-hidden="true"></span>
+        </header>
+        <p class="introduction-copy">
+          기술적 배움의 과정, 문제 해결의 기록, 그리고 실제 구동되는 서비스들을 기록하는 공간입니다.
+          단순한 코드의 나열을 넘어, AI와의 협업을 통해 아이디어가 현실화되는 과정을 아카이빙합니다.
+        </p>
+        <div class="signal-trace" aria-hidden="true">
+          <svg viewBox="0 0 1040 64" preserveAspectRatio="none" focusable="false">
+            <path
+              d="M0 52 H282 L318 34 L342 45 L396 40 L456 14 L570 40 L684 6 L698 13 L711 9 L820 52 H1040"
+            ></path>
+          </svg>
+        </div>
+      </section>
+      <section class="home-section latest-logs" aria-labelledby="latest-title">
+        <header class="indexed-heading">
+          <h2 id="latest-title" class="mono"><span>02</span><span>/</span>LATEST_LOGS</h2>
+          <span class="heading-line" aria-hidden="true"></span>
+        </header>
+        {
+          posts.length > 0 ? (
+            <>
+              <div class="post-list">
+                {posts.map((post) => (
+                  <PostRow post={post} />
+                ))}
+              </div>
+            </>
+          ) : (
+            <EmptyState />
+          )
+        }
+      </section>
+    </div>
   </div>
 </BaseLayout>
 
