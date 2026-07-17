@@ -116,7 +116,7 @@ Do not add UI frameworks, state-management libraries, CSS frameworks, or general
 
 - Treat `supabase/migrations/` as the source of truth for database schema changes.
 - Keep public reads behind Row Level Security and anonymous writes behind a reviewed Edge Function.
-- Browser code may use only the Supabase project URL and publishable key. Service-role keys and hashing secrets belong only in Edge Function secrets.
+- Browser code may use only the Supabase project URL and the public comments endpoint. Service-role keys, publishable keys, and hashing secrets belong only in backend or deployment configuration; browser code must not send an API key.
 - Store only the data required by the approved feature. Do not collect email addresses, raw IP addresses, or authentication data for the comments MVP.
 - New migrations, RLS policies, Edge Functions, and client states require unit, E2E, accessibility, and production-build verification appropriate to their impact.
 

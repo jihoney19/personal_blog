@@ -3,7 +3,6 @@
 interface ImportMetaEnv {
   readonly PUBLIC_COMMENTS_ENABLED?: string;
   readonly PUBLIC_SUPABASE_URL?: string;
-  readonly PUBLIC_SUPABASE_PUBLISHABLE_KEY?: string;
 }
 
 interface ImportMeta {
