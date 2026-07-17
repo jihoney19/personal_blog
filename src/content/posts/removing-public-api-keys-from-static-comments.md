@@ -1,8 +1,8 @@
 ---
 title: 정적 사이트 댓글에서 브라우저 API 키 제거하기
 description: 배포된 정적 사이트에서 댓글 UI가 사라진 원인을 추적하고, 브라우저에 Supabase API 키를 전달하지 않는 Edge Function 구조로 개선한 과정을 정리합니다.
-pubDate: '2026-07-18'
-type: Retrospective
+publishedAt: '2026-07-18'
+type: Project Retrospectives
 category: Backend
 tags:
   - Supabase

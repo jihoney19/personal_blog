@@ -1,9 +1,9 @@
-export type SortablePost = { id: string; data: { pubDate: string } };
+export type SortablePost = { id: string; data: { publishedAt: string } };
 export type TypedPost = SortablePost & { data: { type: string } };
 
 export function sortPosts<T extends SortablePost>(posts: T[]): T[] {
   return [...posts].sort(
-    (a, b) => b.data.pubDate.localeCompare(a.data.pubDate) || a.id.localeCompare(b.id),
+    (a, b) => b.data.publishedAt.localeCompare(a.data.publishedAt) || a.id.localeCompare(b.id),
   );
 }
 
@@ -21,7 +21,10 @@ export function getAdjacentPosts<T extends TypedPost>(
   };
 }
 
-export function readingTime(text: string, wordsPerMinute = 220) {
-  const words = text.trim() ? text.trim().split(/\s+/u).length : 0;
-  return Math.max(1, Math.ceil(words / wordsPerMinute));
+export function readingTime(text: string) {
+  const codeBlocks = [...text.matchAll(/```[\s\S]*?```/gu)];
+  const prose = text.replace(/```[\s\S]*?```/gu, '').trim();
+  const proseMinutes = prose ? prose.length / 500 : 0;
+  const codeMinutes = (codeBlocks.length * 15) / 60;
+  return Math.max(1, Math.ceil(proseMinutes + codeMinutes));
 }

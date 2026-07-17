@@ -14,8 +14,11 @@ const {
   currentPath = Astro.url.pathname,
   activeCategory,
   activeTopic,
+  type = 'website',
 } = Astro.props;
 const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
+const canonicalUrl = new URL(sitePath(normalizedCurrentPath), Astro.site ?? Astro.url).href;
+const rssUrl = new URL(sitePath('/rss.xml'), Astro.site ?? Astro.url).href;
 ---
 
 <!doctype html>
@@ -24,6 +27,16 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} RSS`} href={rssUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <title>{title} · {site.name}</title>
     <script is:inline>
       let saved = null;

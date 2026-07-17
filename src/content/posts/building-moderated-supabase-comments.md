@@ -1,8 +1,8 @@
 ---
 title: Astro 정적 블로그에 승인형 Supabase 댓글 연결하기
 description: 정적 콘텐츠 구조를 유지하면서 Supabase, RLS, Edge Function으로 승인형 댓글 기능을 구현하고 검증한 과정을 정리합니다.
-pubDate: '2026-07-17'
-type: Retrospective
+publishedAt: '2026-07-17'
+type: Project Retrospectives
 category: Backend
 tags:
   - Supabase

@@ -10,8 +10,8 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    pubDate: date,
-    updatedDate: date.optional(),
+    publishedAt: date,
+    updatedAt: date.optional(),
     type: z.enum(POST_TYPES),
     category: z.enum(BLOG_CATEGORIES),
     tags: z.array(z.string().trim()).superRefine((tags, ctx) => {
@@ -32,7 +32,7 @@ const projects = defineCollection({
     .object({
       title: z.string().min(1),
       summary: z.string().min(1),
-      status: z.enum(['In progress', 'Complete', 'Paused']),
+      status: z.enum(['Planning', 'In Progress', 'Complete', 'Maintenance']),
       startedAt: date,
       endedAt: date.optional(),
       role: z.string().min(1),

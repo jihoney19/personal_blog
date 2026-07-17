@@ -1,8 +1,8 @@
 ---
 title: TypeScript 타입 좁히기 기초
 description: 여러 타입이 될 수 있는 값을 안전하게 다루는 TypeScript의 타입 좁히기 방법을 정리합니다.
-pubDate: '2026-07-16'
-type: Note
+publishedAt: '2026-07-16'
+type: Learning Notes
 category: Backend
 tags:
   - TypeScript
