@@ -19,3 +19,4 @@ This file is the durable duplicate-prevention record for posts created by the pr
 | Topic key | Stage key | Post slug | Source branch | Publication date | Notes |
 |---|---|---|---|---|---|
 | moderated-supabase-comments | backend-integration | building-moderated-supabase-comments | codex/moderated-supabase-comments | 2026-07-17 | Approved schema, RLS, Edge Function, rate limiting, comments UI, and QA |
+| moderated-supabase-comments | keyless-public-endpoint | removing-public-api-keys-from-static-comments | codex/remove-public-comment-key | 2026-07-18 | Approved browser key removal, public Edge Function Origin checks, deployment fix, and QA |

@@ -21,7 +21,6 @@ export default defineConfig({
     env: {
       PUBLIC_COMMENTS_ENABLED: 'true',
       PUBLIC_SUPABASE_URL: 'https://comments.example.test',
-      PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'test-publishable-key',
     },
     url: 'http://127.0.0.1:4321',
     reuseExistingServer: false,

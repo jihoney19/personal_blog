@@ -64,7 +64,7 @@ Endpoint: `/functions/v1/comments`
 
 ## 6. Security Boundary
 
-- `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_PUBLISHABLE_KEY` may be included in the static browser build.
+- Only `PUBLIC_SUPABASE_URL` and the enabled flag may be included in the static browser build. The browser calls the comments Edge Function without an API key; Supabase credentials remain inside the function environment.
 - `SUPABASE_SERVICE_ROLE_KEY` and `COMMENTS_HASH_SECRET` exist only in Edge Function secrets.
 - Comment text is stored as plain text and rendered with DOM `textContent`, not HTML.
 - The first version collects no email address and stores no raw IP address.

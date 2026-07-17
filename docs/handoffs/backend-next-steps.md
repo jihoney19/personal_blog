@@ -30,7 +30,7 @@ The production project and live site configuration were not modified. The develo
 ## Release Steps Requiring Separate Approval
 
 1. Decide the actual live site origin and add it to `COMMENTS_ALLOWED_ORIGINS`.
-2. Add the development or production public URL, publishable key, and enabled flag to the intended build environment.
+2. Add the development or production public URL and enabled flag to the intended build environment. Do not add an API key to the browser build.
 3. Run the full site against the live backend and complete browser QA.
 4. Create or select a production Supabase project.
 5. Apply the verified migrations, secrets, and function to production only after explicit approval.

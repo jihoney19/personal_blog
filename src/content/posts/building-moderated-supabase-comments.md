@@ -28,7 +28,7 @@ status: Published
 브라우저 -> RLS가 적용된 approved 댓글 조회
 ```
 
-브라우저에는 공개 가능한 프로젝트 URL과 publishable key만 전달하고, 서비스 역할 키와 해시 비밀값은 Edge Function 환경에만 둡니다.
+브라우저에는 프로젝트 URL만 전달하고, Supabase 인증 키와 해시 비밀값은 Edge Function 환경에만 둡니다. 브라우저는 출처 검증과 요청 제한이 적용된 댓글 엔드포인트만 호출합니다.
 
 ## 승인형 댓글 스키마와 RLS
 

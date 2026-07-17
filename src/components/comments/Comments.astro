@@ -6,8 +6,7 @@ interface Props {
 const { postSlug } = Astro.props;
 const isCommentsEnabled = import.meta.env.PUBLIC_COMMENTS_ENABLED === 'true';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL?.trim() ?? '';
-const publishableKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim() ?? '';
-const isCommentsConfigured = Boolean(supabaseUrl && publishableKey);
+const isCommentsConfigured = Boolean(supabaseUrl);
 const commentsApiUrl = isCommentsConfigured
   ? new URL('/functions/v1/comments', supabaseUrl).toString()
   : '';
@@ -16,12 +15,7 @@ const commentsApiUrl = isCommentsConfigured
 {
   isCommentsEnabled &&
     (isCommentsConfigured ? (
-      <devlog-comments
-        data-comments-root
-        data-api-url={commentsApiUrl}
-        data-publishable-key={publishableKey}
-        data-post-slug={postSlug}
-      >
+      <devlog-comments data-comments-root data-api-url={commentsApiUrl} data-post-slug={postSlug}>
         <section class="comments-section" aria-labelledby="comments-title">
           <header class="comments-header">
             <p class="mono">READER FEEDBACK</p>
@@ -149,7 +143,6 @@ const commentsApiUrl = isCommentsConfigured
       this.dataset.enhanced = 'true';
 
       const apiUrl = this.dataset.apiUrl;
-      const publishableKey = this.dataset.publishableKey;
       const postSlug = this.dataset.postSlug;
       const region = this.querySelector<HTMLElement>('[data-comments-region]');
       const loading = this.querySelector<HTMLElement>('[data-comments-loading]');
@@ -164,7 +157,6 @@ const commentsApiUrl = isCommentsConfigured
 
       if (
         !apiUrl ||
-        !publishableKey ||
         !postSlug ||
         !region ||
         !loading ||
@@ -180,11 +172,7 @@ const commentsApiUrl = isCommentsConfigured
         return;
       }
 
-      const requestHeaders = {
-        Accept: 'application/json',
-        apikey: publishableKey,
-        Authorization: `Bearer ${publishableKey}`,
-      };
+      const requestHeaders = { Accept: 'application/json' };
 
       const renderComments = (comments: PublicComment[]) => {
         const formatter = new Intl.DateTimeFormat('ko-KR', {

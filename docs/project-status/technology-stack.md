@@ -83,8 +83,8 @@ Node.js 요구 버전은 `package.json` 기준 `20.0.0` 이상이며, 패키지 
 - 기본 사이트 URL은 `https://jihoney19.github.io`로 설정되어 있습니다.
 - GitHub Actions 환경에서는 base path로 `/personal_blog`를 사용합니다.
 - `.github/workflows/deploy-pages.yml`에 `main` 브랜치 push 시 GitHub Pages를 빌드·배포하는 워크플로가 있습니다.
-- 댓글은 `PUBLIC_COMMENTS_ENABLED`, `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_PUBLISHABLE_KEY`가 설정된 빌드에서만 노출됩니다.
-- 개발 Edge Function은 `xnttxukulsbqyapzirkw`에 배포되어 있으며 현재 허용 Origin은 `http://localhost:4321`입니다.
+- 댓글은 `PUBLIC_COMMENTS_ENABLED`와 `PUBLIC_SUPABASE_URL`이 설정된 빌드에서만 노출되며, 브라우저는 API 키 없이 Edge Function을 호출합니다.
+- 개발 Edge Function은 `xnttxukulsbqyapzirkw`에 배포되어 있으며 허용 Origin은 로컬 개발 주소와 `https://jihoney19.github.io`입니다.
 - `.openai/hosting.json`에 Sites 프로젝트 식별자가 있습니다.
 - 현재 문서 작성 시점에는 실제 원격 배포 성공 여부나 라이브 URL 상태를 다시 확인하지 않았습니다.
 
