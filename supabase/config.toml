@@ -1,0 +1,4 @@
+project_id = "dev-log"
+
+[functions.comments]
+verify_jwt = false

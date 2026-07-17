@@ -430,16 +430,16 @@ main {
 .project-hero h1 {
   max-width: 760px;
   margin: 0;
-  font-size: clamp(36px, 5vw, 58px);
-  letter-spacing: -0.045em;
-  line-height: 1.08;
+  font-size: clamp(34px, 4vw, 52px);
+  letter-spacing: -0.035em;
+  line-height: 1.15;
 }
 .project-summary {
   max-width: 700px;
   margin: 24px 0 0;
   color: var(--mute);
-  font-size: 18px;
-  line-height: 1.8;
+  font-size: 17px;
+  line-height: 1.75;
 }
 .project-spec {
   max-width: 100%;
@@ -509,8 +509,9 @@ main {
   margin: 88px 0 24px;
   padding-left: 16px;
   border-left: 4px solid var(--accent);
-  font-size: 28px;
-  letter-spacing: -0.03em;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
 }
 .project-content h2:first-child {
   margin-top: 0;
@@ -522,8 +523,8 @@ main {
 .project-content p,
 .project-content li {
   color: var(--mute);
-  font-size: 16px;
-  line-height: 1.9;
+  font-size: 17px;
+  line-height: 1.8;
 }
 .project-content ul {
   display: grid;
@@ -540,6 +541,28 @@ main {
 }
 .project-content h2 + p {
   margin-top: 0;
+}
+.project-logs {
+  margin-top: 88px;
+}
+.project-logs h2 {
+  margin: 0 0 24px;
+  color: var(--ink);
+  font-size: 24px;
+}
+.project-log-links {
+  margin-top: 12px;
+  font-size: 14px;
+}
+.project-log-links strong {
+  color: var(--mute);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.project-log-links ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
 }
 .project-pagination {
   display: grid;
@@ -590,7 +613,7 @@ main {
     padding-bottom: 40px;
   }
   .project-hero h1 {
-    font-size: 38px;
+    font-size: 36px;
   }
   .project-summary {
     font-size: 16px;
@@ -838,6 +861,10 @@ main,
 @media (min-width: 851px) {
   .site-header {
     display: none;
+  }
+  .home-workspace,
+  .category-workspace {
+    padding-left: 0;
   }
 }
 .post-page {

@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAdjacentPosts, readingTime, sortPosts } from '../../lib/posts';
 import { toHeadingId, toSlug } from '../../lib/slug';
 import { sitePath } from '../../lib/paths';
+import Comments from '../../components/comments/Comments.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -132,6 +133,8 @@ const related = ordered
             </section>
           )
         }
+
+        <Comments postSlug={post.id} />
       </article>
     </div>
   </div>
