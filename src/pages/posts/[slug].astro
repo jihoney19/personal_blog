@@ -38,7 +38,12 @@ const related = ordered
   .map(({ item }) => item);
 ---
 
-<BaseLayout title={data.title} activeCategory={data.category}>
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  type="article"
+  activeCategory={data.category}
+>
   <div class="container section post-page">
     <div class="article-layout">
       <aside class="article-toc" aria-label="Table of contents">
@@ -69,9 +74,9 @@ const related = ordered
           </p>
           <h1 class="page-title">{data.title}</h1>
           <div class="article-meta mono">
-            <span>{data.pubDate}</span>
+            <span>{data.publishedAt}</span>
             <span>{readingTime(post.body ?? '')}분 읽기</span>
-            {data.updatedDate && <span>Update: {data.updatedDate}</span>}
+            {data.updatedAt && <span>Update: {data.updatedAt}</span>}
           </div>
           <p class="article-lede">{data.description}</p>
         </header>
@@ -89,6 +94,8 @@ const related = ordered
             ))
           }
         </ul>
+
+        <Comments postSlug={post.id} />
 
         {
           (previous || next) && (
@@ -126,15 +133,13 @@ const related = ordered
                       NO IMAGE
                     </span>
                     <strong>{item.data.title}</strong>
-                    <time datetime={item.data.pubDate}>{item.data.pubDate}</time>
+                    <time datetime={item.data.publishedAt}>{item.data.publishedAt}</time>
                   </a>
                 ))}
               </div>
             </section>
           )
         }
-
-        <Comments postSlug={post.id} />
       </article>
     </div>
   </div>

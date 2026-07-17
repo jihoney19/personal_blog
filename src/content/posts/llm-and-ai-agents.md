@@ -1,9 +1,9 @@
 ---
 title: LLM과 AI 에이전트는 어떻게 다를까
 description: 텍스트를 생성하는 LLM과 목표를 달성하기 위해 도구를 사용하는 AI 에이전트의 차이를 정리합니다.
-pubDate: '2026-07-16'
-type: Article
-category: AI
+publishedAt: '2026-07-16'
+type: Technical Articles
+category: AI Agents
 tags:
   - LLM
   - AI Agents

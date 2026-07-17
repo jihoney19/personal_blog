@@ -2,13 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sitePath } from '../../lib/paths';
-import { sortPosts } from '../../lib/posts';
 const projects = await getCollection('projects');
-const projectPosts = sortPosts(
-  (await getCollection('posts')).filter(
-    (post) => !post.data.draft && post.data.category === 'Projects',
-  ),
-);
+const posts = (await getCollection('posts')).filter((post) => !post.data.draft);
 ---
 
 <BaseLayout title="Projects" currentPath="/projects/">
@@ -29,15 +24,18 @@ const projectPosts = sortPosts(
                   <span>{project.data.stack.join(' · ')}</span>
                 </>
               </div>
-              {projectPosts.length > 0 && (
+              {project.data.relatedPosts && project.data.relatedPosts.length > 0 && (
                 <div class="project-log-links">
                   <strong>Project Logs</strong>
                   <ul>
-                    {projectPosts.map((post) => (
-                      <li>
-                        <a href={sitePath(`/posts/${post.id}/`)}>{post.data.title}</a>
-                      </li>
-                    ))}
+                    {project.data.relatedPosts.map((postId) => {
+                      const post = posts.find((item) => item.id === postId);
+                      return post ? (
+                        <li>
+                          <a href={sitePath(`/posts/${post.id}/`)}>{post.data.title}</a>
+                        </li>
+                      ) : null;
+                    })}
                   </ul>
                 </div>
               )}

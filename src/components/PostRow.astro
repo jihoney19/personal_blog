@@ -11,7 +11,7 @@ const data = post.data;
     <a href={sitePath(`/posts/${post.id}/`)}>{data.title}</a>
   </h3>
   <div class="meta mono">
-    <span>{data.pubDate}</span><span class="badge badge-category">{data.category}</span><span
+    <span>{data.publishedAt}</span><span class="badge badge-category">{data.category}</span><span
       class="badge badge-type">{data.type}</span
     ><span>읽는 시간 {readingTime(post.body ?? '')}분</span>
   </div>

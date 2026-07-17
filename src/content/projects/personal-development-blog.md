@@ -1,7 +1,7 @@
 ---
 title: Personal Development Blog
 summary: 승인된 설계와 구현 과정을 기록하는 개인 개발 블로그
-status: In progress
+status: In Progress
 startedAt: '2026-07-15'
 role: 개인 프로젝트
 stack:

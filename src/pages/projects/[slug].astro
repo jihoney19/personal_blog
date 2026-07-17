@@ -12,10 +12,17 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const data = project.data;
+const posts = await getCollection('posts');
+const missingRelatedPosts = (data.relatedPosts ?? []).filter(
+  (postId) => !posts.some((post) => post.id === postId && !post.data.draft),
+);
+if (missingRelatedPosts.length > 0) {
+  throw new Error(
+    `Project ${project.id} references missing or draft posts: ${missingRelatedPosts.join(', ')}`,
+  );
+}
 const projectPosts = sortPosts(
-  (await getCollection('posts')).filter(
-    (post) => !post.data.draft && post.data.category === 'Projects',
-  ),
+  posts.filter((post) => !post.data.draft && data.relatedPosts?.includes(post.id)),
 );
 ---
 
@@ -82,7 +89,7 @@ const projectPosts = sortPosts(
                   </h3>
                   <p>{post.data.description}</p>
                   <div class="meta mono">
-                    <span>{post.data.pubDate}</span>
+                    <span>{post.data.publishedAt}</span>
                     <span>{post.data.type}</span>
                   </div>
                 </article>
