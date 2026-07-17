@@ -7,7 +7,7 @@ import { sitePath } from '../lib/paths';
 import { buildSiteNavigation } from '../lib/topic-navigation';
 const basePath = import.meta.env.BASE_URL.replace(/\/$/u, '');
 const navigationPosts = (await getCollection('posts')).filter((post) => !post.data.draft);
-const siteNavigation = buildSiteNavigation(navigationPosts);
+const siteNavigation = buildSiteNavigation();
 const {
   title = site.name,
   description = site.description,
@@ -55,7 +55,7 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
           <a class="brand mono" href={sitePath('/')}>{site.name}</a>
           <nav class="desktop-nav" aria-label="데스크톱 전역 탐색">
             {
-            siteNavigation.map((item) => (
+              siteNavigation.map((item) => (
                 <a
                   href={item.href}
                   aria-current={
@@ -99,14 +99,14 @@ const normalizedCurrentPath = currentPath.replace(basePath, '') || '/';
               const children = item.children;
               return (
                 <div class="mobile-menu-group">
-                <a
-                  href={item.href}
-                  aria-current={
-                    normalizedCurrentPath === item.href.replace(basePath, '') ? 'page' : undefined
-                  }
-                >
-                  {item.label}
-                </a>
+                  <a
+                    href={item.href}
+                    aria-current={
+                      normalizedCurrentPath === item.href.replace(basePath, '') ? 'page' : undefined
+                    }
+                  >
+                    {item.label}
+                  </a>
                   {children && (
                     <div class="mobile-menu-children">
                       {children.map((child) => (

@@ -1,9 +1,9 @@
 ---
 title: 정적 개발 블로그의 기술 스택을 선택한 이유
 description: 개인 개발 블로그 MVP를 Astro, TypeScript, Markdown 중심으로 구성한 이유와 각 기술이 맡은 역할을 정리합니다.
-publishedAt: '2026-07-16'
-type: Technical Articles
-category: Astro
+pubDate: '2026-07-16'
+type: Article
+category: Frontend
 tags:
   - Astro
   - TypeScript

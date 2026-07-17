@@ -1,9 +1,9 @@
 ---
 title: 개인 개발 블로그 MVP를 설계하고 구현한 하루
 description: 승인된 와이어프레임과 고해상도 목업을 Astro 정적 사이트로 옮기며 문서·UI·검증 흐름을 정리한 작업 기록입니다.
-publishedAt: '2026-07-15'
-type: Project Retrospectives
-category: Astro
+pubDate: '2026-07-15'
+type: Retrospective
+category: Projects
 tags:
   - Astro
   - UI Design

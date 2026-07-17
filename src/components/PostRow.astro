@@ -8,13 +8,12 @@ const data = post.data;
 
 <article class="post-row" data-post-category={data.category}>
   <h3>
-    <a href={sitePath(`/posts/${post.id}/`)}><span class="mono">[{data.type}]</span> {data.title}</a
-    >
+    <a href={sitePath(`/posts/${post.id}/`)}>{data.title}</a>
   </h3>
   <div class="meta mono">
-    <span>{data.publishedAt}</span><span>{data.category}</span><span
-      >읽는 시간 {readingTime(post.body ?? '')}분</span
-    >
+    <span>{data.pubDate}</span><span class="badge badge-category">{data.category}</span><span
+      class="badge badge-type">{data.type}</span
+    ><span>읽는 시간 {readingTime(post.body ?? '')}분</span>
   </div>
   <ul class="tag-list post-tags" aria-label="태그">
     {

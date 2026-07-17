@@ -5,9 +5,9 @@ import { toHeadingId } from '../../src/lib/slug';
 describe('post utilities', () => {
   it('sorts newest posts first and breaks ties by id', () => {
     const posts = [
-      { id: 'z-post', data: { publishedAt: '2026-07-15' } },
-      { id: 'a-post', data: { publishedAt: '2026-07-15' } },
-      { id: 'old-post', data: { publishedAt: '2026-07-14' } },
+      { id: 'z-post', data: { pubDate: '2026-07-15' } },
+      { id: 'a-post', data: { pubDate: '2026-07-15' } },
+      { id: 'old-post', data: { pubDate: '2026-07-14' } },
     ];
     expect(sortPosts(posts).map((post) => post.id)).toEqual(['a-post', 'z-post', 'old-post']);
   });
@@ -19,14 +19,14 @@ describe('post utilities', () => {
 
   it('keeps previous and next posts within the current log type', () => {
     const posts = [
-      { id: 'learning-new', data: { publishedAt: '2026-07-16', type: 'Learning Notes' } },
-      { id: 'article-new', data: { publishedAt: '2026-07-16', type: 'Technical Articles' } },
-      { id: 'learning-current', data: { publishedAt: '2026-07-15', type: 'Learning Notes' } },
-      { id: 'article-old', data: { publishedAt: '2026-07-14', type: 'Technical Articles' } },
-      { id: 'learning-old', data: { publishedAt: '2026-07-14', type: 'Learning Notes' } },
+      { id: 'learning-new', data: { pubDate: '2026-07-16', type: 'Note' } },
+      { id: 'article-new', data: { pubDate: '2026-07-16', type: 'Article' } },
+      { id: 'learning-current', data: { pubDate: '2026-07-15', type: 'Note' } },
+      { id: 'article-old', data: { pubDate: '2026-07-14', type: 'Article' } },
+      { id: 'learning-old', data: { pubDate: '2026-07-14', type: 'Note' } },
     ];
 
-    const adjacent = getAdjacentPosts(posts, 'learning-current', 'Learning Notes');
+    const adjacent = getAdjacentPosts(posts, 'learning-current', 'Note');
 
     expect(adjacent.previous?.id).toBe('learning-old');
     expect(adjacent.next?.id).toBe('learning-new');

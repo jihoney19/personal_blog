@@ -3,24 +3,14 @@ import { sitePath } from '../lib/paths';
 import { site } from '../data/site';
 import { buildSiteNavigation } from '../lib/topic-navigation';
 
-type NavigationPost = {
-  data: {
-    category: string;
-    draft?: boolean;
-  };
-};
-
 const {
-  posts = [],
   currentPath = Astro.url.pathname,
   activeCategory,
 }: {
-  posts?: NavigationPost[];
   currentPath?: string;
   activeCategory?: string;
 } = Astro.props;
-const siteNavigation = buildSiteNavigation(posts);
-
+const siteNavigation = buildSiteNavigation();
 ---
 
 <aside class="post-navigation" aria-label="Site navigation">
@@ -37,39 +27,37 @@ const siteNavigation = buildSiteNavigation(posts);
               <a href={item.href} aria-current={isCurrent ? 'page' : undefined}>
                 {item.label}
               </a>
-              {
-                children && (
-                  <ul class="post-navigation-children">
-                    {children.map((child) => {
-                      const isCurrentChild = currentPath === child.href;
-                      return (
-                        <li class:list={{ 'is-active': isCurrentChild }}>
-                          <a href={child.href} aria-current={isCurrentChild ? 'page' : undefined}>
-                            {child.label}
-                          </a>
-                          {child.children && (
-                            <ul class="post-navigation-children post-navigation-grandchildren">
-                              {child.children.map((grandchild) => {
-                                const isCurrentGrandchild = currentPath === grandchild.href;
-                                return (
-                                  <li class:list={{ 'is-active': isCurrentGrandchild }}>
-                                    <a
-                                      href={grandchild.href}
-                                      aria-current={isCurrentGrandchild ? 'page' : undefined}
-                                    >
-                                      {grandchild.label}
-                                    </a>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )
-              }
+              {children && (
+                <ul class="post-navigation-children">
+                  {children.map((child) => {
+                    const isCurrentChild = currentPath === child.href;
+                    return (
+                      <li class:list={{ 'is-active': isCurrentChild }}>
+                        <a href={child.href} aria-current={isCurrentChild ? 'page' : undefined}>
+                          {child.label}
+                        </a>
+                        {child.children && (
+                          <ul class="post-navigation-children post-navigation-grandchildren">
+                            {child.children.map((grandchild) => {
+                              const isCurrentGrandchild = currentPath === grandchild.href;
+                              return (
+                                <li class:list={{ 'is-active': isCurrentGrandchild }}>
+                                  <a
+                                    href={grandchild.href}
+                                    aria-current={isCurrentGrandchild ? 'page' : undefined}
+                                  >
+                                    {grandchild.label}
+                                  </a>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </li>
           );
         })

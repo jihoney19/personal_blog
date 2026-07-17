@@ -352,6 +352,20 @@ main {
   font-size: 12px;
   line-height: 1.5;
 }
+.badge {
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.badge-category {
+  background: var(--ink);
+  color: var(--canvas);
+}
+.badge-type {
+  border: 1px solid var(--hairline-strong);
+  color: var(--body);
+}
 .tag a {
   color: inherit;
   text-decoration: none;

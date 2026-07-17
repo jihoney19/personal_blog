@@ -1,9 +1,9 @@
-export type SortablePost = { id: string; data: { publishedAt: string } };
+export type SortablePost = { id: string; data: { pubDate: string } };
 export type TypedPost = SortablePost & { data: { type: string } };
 
 export function sortPosts<T extends SortablePost>(posts: T[]): T[] {
   return [...posts].sort(
-    (a, b) => b.data.publishedAt.localeCompare(a.data.publishedAt) || a.id.localeCompare(b.id),
+    (a, b) => b.data.pubDate.localeCompare(a.data.pubDate) || a.id.localeCompare(b.id),
   );
 }
 

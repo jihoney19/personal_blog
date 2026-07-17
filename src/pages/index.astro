@@ -5,7 +5,9 @@ import HomeHero from '../components/HomeHero.astro';
 import EmptyState from '../components/EmptyState.astro';
 import PostRow from '../components/PostRow.astro';
 import { sortPosts } from '../lib/posts';
+import CategoryFilter from '../components/CategoryFilter.astro';
 const posts = sortPosts((await getCollection('posts')).filter((post) => !post.data.draft));
+const categories = [...new Set(posts.map((post) => post.data.category))].sort();
 ---
 
 <BaseLayout currentPath="/" title="Home">
@@ -37,6 +39,7 @@ const posts = sortPosts((await getCollection('posts')).filter((post) => !post.da
         {
           posts.length > 0 ? (
             <>
+              <CategoryFilter categories={categories} />
               <div class="post-list">
                 {posts.map((post) => (
                   <PostRow post={post} />

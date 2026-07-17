@@ -14,5 +14,8 @@ export const site = {
 };
 
 export const navigation: NavigationItem[] = [
-  { label: 'Project', href: sitePath('/projects/') },
+  { label: 'Home', href: sitePath('/') },
+  { label: 'Logs', href: sitePath('/logs/') },
+  { label: 'Projects', href: sitePath('/projects/') },
+  { label: 'About', href: sitePath('/about/') },
 ];
