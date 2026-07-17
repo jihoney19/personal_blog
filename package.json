@@ -16,7 +16,7 @@
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
-    "qa": "npm run check && npm run lint && npm run format:check && npm run test:unit && npm run build"
+    "qa": "npm run check && npm run lint && npm run format:check && npm run test:unit && npm run test:e2e && npm run test:a11y && npm run build"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.0",
@@ -24,12 +24,14 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.55.0",
     "@types/node": "^22.0.0",
     "eslint": "^9.0.0",
     "eslint-plugin-astro": "^1.7.0",
     "prettier": "^3.6.0",
     "prettier-plugin-astro": "^0.14.0",
+    "supabase": "^2.109.1",
     "typescript": "^5.8.0",
     "typescript-eslint": "^8.64.0",
     "vitest": "^3.2.0"

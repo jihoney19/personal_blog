@@ -326,7 +326,6 @@ When a link value is unavailable, hide the corresponding UI instead of displayin
 ### 7.2 Future Development
 
 - Full-text search
-- Comments using Giscus or a similar service
 - Archives by year and month
 - Applying and verifying the actual deployment URL for the RSS feed
 - Automatic OG image generation
@@ -343,6 +342,22 @@ When a link value is unavailable, hide the corresponding UI instead of displayin
 - Database
 - English and multilingual site support
 - Initial sample posts
+
+### 7.4 Approved Runtime Extension — Moderated Comments
+
+The user approved a separate Supabase-backed comments extension on 2026-07-17. This extension does not move posts or projects out of Markdown and Git.
+
+| Item | Decision |
+| --- | --- |
+| Content ownership | Posts and projects remain Astro Content Collections managed through Markdown and Git |
+| Runtime data | Only reader-generated comments are stored in Supabase for the first extension |
+| Public reads | Browsers can read only approved comments through Row Level Security |
+| Public writes | Comment submissions pass through a Supabase Edge Function and enter a pending moderation state |
+| Personal data | The comments MVP does not request email addresses and does not store raw IP addresses |
+| Spam controls | Honeypot validation and HMAC-based request throttling are required before accepting a comment |
+| Deployment | Schema and application code may be prepared locally, but connecting or deploying the external service remains a separately verified operation |
+
+Likes, email subscriptions, and visitor analytics remain outside this first runtime extension. Reassess them after the comments vertical slice is operating and verified.
 
 ---
 
@@ -466,7 +481,7 @@ The current project scope is complete when all of the following conditions are m
 | Language | Korean only |
 | Profile | Real name and profile are public |
 | Theme | Provide both light and dark modes |
-| Comments | Future development |
+| Comments | Moderated Supabase-backed extension approved on 2026-07-17 |
 | Search | Future development after enough posts accumulate |
 | Deployment | Currently excluded; local development only |
 

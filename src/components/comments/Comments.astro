@@ -1,0 +1,540 @@
+---
+interface Props {
+  postSlug: string;
+}
+
+const { postSlug } = Astro.props;
+const isCommentsEnabled = import.meta.env.PUBLIC_COMMENTS_ENABLED === 'true';
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL?.trim() ?? '';
+const publishableKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim() ?? '';
+const isCommentsConfigured = Boolean(supabaseUrl && publishableKey);
+const commentsApiUrl = isCommentsConfigured
+  ? new URL('/functions/v1/comments', supabaseUrl).toString()
+  : '';
+---
+
+{
+  isCommentsEnabled &&
+    (isCommentsConfigured ? (
+      <devlog-comments
+        data-comments-root
+        data-api-url={commentsApiUrl}
+        data-publishable-key={publishableKey}
+        data-post-slug={postSlug}
+      >
+        <section class="comments-section" aria-labelledby="comments-title">
+          <header class="comments-header">
+            <p class="mono">READER FEEDBACK</p>
+            <h2 id="comments-title">댓글</h2>
+            <p>모든 댓글은 검토 후 공개됩니다. 이메일이나 다른 개인정보는 입력하지 마세요.</p>
+          </header>
+
+          <p class="comments-js-required">댓글을 보거나 등록하려면 JavaScript가 필요합니다.</p>
+
+          <div class="comments-list-region" data-comments-region aria-busy="true">
+            <p class="comments-loading" data-comments-loading role="status">
+              댓글을 불러오는 중입니다.
+            </p>
+            <p class="comments-empty" data-comments-empty hidden>
+              아직 공개된 댓글이 없습니다.
+            </p>
+            <ol class="comments-list" data-comments-list aria-label="공개된 댓글" />
+            <button class="comments-retry" type="button" data-comments-retry hidden>
+              다시 불러오기
+            </button>
+          </div>
+
+          <form class="comment-form" data-comment-form>
+            <div class="comment-field">
+              <label for={`comment-author-${postSlug}`}>이름</label>
+              <input
+                id={`comment-author-${postSlug}`}
+                name="authorName"
+                type="text"
+                minlength="2"
+                maxlength="40"
+                autocomplete="nickname"
+                required
+              />
+            </div>
+
+            <div class="comment-field comment-content-field">
+              <div class="comment-label-row">
+                <label for={`comment-content-${postSlug}`}>댓글</label>
+                <output data-content-count for={`comment-content-${postSlug}`}>
+                  0 / 2000
+                </output>
+              </div>
+              <textarea
+                id={`comment-content-${postSlug}`}
+                name="content"
+                rows="6"
+                minlength="2"
+                maxlength="2000"
+                required
+              />
+            </div>
+
+            <div class="comment-honeypot" aria-hidden="true">
+              <label for={`comment-website-${postSlug}`}>Website</label>
+              <input
+                id={`comment-website-${postSlug}`}
+                name="website"
+                type="url"
+                autocomplete="off"
+                tabindex="-1"
+              />
+            </div>
+
+            <div class="comment-submit-row">
+              <button type="submit" data-comment-submit>
+                댓글 등록
+              </button>
+              <p class="comment-form-status" data-comment-status role="status" aria-live="polite" />
+            </div>
+          </form>
+        </section>
+      </devlog-comments>
+    ) : (
+      <section class="comments-section comments-unavailable" aria-labelledby="comments-title">
+        <p class="mono">READER FEEDBACK</p>
+        <h2 id="comments-title">댓글</h2>
+        <p role="status">댓글 서비스 설정이 완료되지 않았습니다.</p>
+      </section>
+    ))
+}
+
+<script>
+  interface PublicComment {
+    id: string;
+    post_slug: string;
+    author_name: string;
+    content: string;
+    created_at: string;
+  }
+
+  function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+
+  function isPublicComment(value: unknown): value is PublicComment {
+    if (!isRecord(value)) return false;
+    return (
+      typeof value.id === 'string' &&
+      typeof value.post_slug === 'string' &&
+      typeof value.author_name === 'string' &&
+      typeof value.content === 'string' &&
+      typeof value.created_at === 'string'
+    );
+  }
+
+  function readComments(value: unknown): PublicComment[] | undefined {
+    if (!Array.isArray(value) || !value.every(isPublicComment)) return undefined;
+    return value;
+  }
+
+  async function readErrorMessage(response: Response, fallback: string): Promise<string> {
+    try {
+      const body: unknown = await response.json();
+      if (isRecord(body) && typeof body.error === 'string') return body.error;
+    } catch {
+      return fallback;
+    }
+    return fallback;
+  }
+
+  class DevlogCommentsElement extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.enhanced === 'true') return;
+      this.dataset.enhanced = 'true';
+
+      const apiUrl = this.dataset.apiUrl;
+      const publishableKey = this.dataset.publishableKey;
+      const postSlug = this.dataset.postSlug;
+      const region = this.querySelector<HTMLElement>('[data-comments-region]');
+      const loading = this.querySelector<HTMLElement>('[data-comments-loading]');
+      const empty = this.querySelector<HTMLElement>('[data-comments-empty]');
+      const list = this.querySelector<HTMLOListElement>('[data-comments-list]');
+      const retry = this.querySelector<HTMLButtonElement>('[data-comments-retry]');
+      const form = this.querySelector<HTMLFormElement>('[data-comment-form]');
+      const submit = this.querySelector<HTMLButtonElement>('[data-comment-submit]');
+      const status = this.querySelector<HTMLElement>('[data-comment-status]');
+      const content = this.querySelector<HTMLTextAreaElement>('textarea[name="content"]');
+      const contentCount = this.querySelector<HTMLOutputElement>('[data-content-count]');
+
+      if (
+        !apiUrl ||
+        !publishableKey ||
+        !postSlug ||
+        !region ||
+        !loading ||
+        !empty ||
+        !list ||
+        !retry ||
+        !form ||
+        !submit ||
+        !status ||
+        !content ||
+        !contentCount
+      ) {
+        return;
+      }
+
+      const requestHeaders = {
+        Accept: 'application/json',
+        apikey: publishableKey,
+        Authorization: `Bearer ${publishableKey}`,
+      };
+
+      const renderComments = (comments: PublicComment[]) => {
+        const formatter = new Intl.DateTimeFormat('ko-KR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        const items = comments.map((comment) => {
+          const item = document.createElement('li');
+          item.className = 'comment-item';
+
+          const header = document.createElement('div');
+          header.className = 'comment-item-header';
+          const author = document.createElement('strong');
+          author.textContent = comment.author_name;
+          const time = document.createElement('time');
+          const date = new Date(comment.created_at);
+          time.dateTime = comment.created_at;
+          time.textContent = Number.isNaN(date.getTime())
+            ? comment.created_at
+            : formatter.format(date);
+          header.append(author, time);
+
+          const message = document.createElement('p');
+          message.textContent = comment.content;
+          item.append(header, message);
+          return item;
+        });
+        list.replaceChildren(...items);
+        empty.hidden = comments.length !== 0;
+      };
+
+      const loadComments = async () => {
+        region.setAttribute('aria-busy', 'true');
+        loading.hidden = false;
+        loading.textContent = '댓글을 불러오는 중입니다.';
+        retry.hidden = true;
+
+        try {
+          const url = new URL(apiUrl);
+          url.searchParams.set('post_slug', postSlug);
+          const response = await fetch(url, { headers: requestHeaders });
+          if (!response.ok) {
+            throw new Error(await readErrorMessage(response, '댓글을 불러오지 못했습니다.'));
+          }
+          const payload: unknown = await response.json();
+          const comments = readComments(payload);
+          if (!comments) throw new Error('댓글 응답 형식이 올바르지 않습니다.');
+          renderComments(comments);
+          loading.hidden = true;
+        } catch (error) {
+          list.replaceChildren();
+          empty.hidden = true;
+          loading.hidden = false;
+          loading.textContent =
+            error instanceof Error ? error.message : '댓글을 불러오지 못했습니다.';
+          retry.hidden = false;
+        } finally {
+          region.setAttribute('aria-busy', 'false');
+        }
+      };
+
+      retry.addEventListener('click', loadComments);
+      content.addEventListener('input', () => {
+        contentCount.textContent = `${content.value.length} / 2000`;
+      });
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+
+        const formData = new FormData(form);
+        const getString = (name: string) => {
+          const value = formData.get(name);
+          return typeof value === 'string' ? value : '';
+        };
+
+        submit.disabled = true;
+        status.textContent = '댓글을 등록하는 중입니다.';
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { ...requestHeaders, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              postSlug,
+              authorName: getString('authorName'),
+              content: getString('content'),
+              website: getString('website'),
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(await readErrorMessage(response, '댓글을 등록하지 못했습니다.'));
+          }
+          form.reset();
+          contentCount.textContent = '0 / 2000';
+          status.textContent = '댓글이 접수되었습니다. 검토 후 공개됩니다.';
+        } catch (error) {
+          status.textContent =
+            error instanceof Error ? error.message : '댓글을 등록하지 못했습니다.';
+        } finally {
+          submit.disabled = false;
+        }
+      });
+
+      void loadComments();
+    }
+  }
+
+  if (!customElements.get('devlog-comments')) {
+    customElements.define('devlog-comments', DevlogCommentsElement);
+  }
+</script>
+
+<style>
+  devlog-comments {
+    display: block;
+  }
+
+  devlog-comments:not([data-enhanced='true']) .comments-list-region,
+  devlog-comments:not([data-enhanced='true']) .comment-form {
+    display: none;
+  }
+
+  devlog-comments[data-enhanced='true'] .comments-js-required {
+    display: none;
+  }
+
+  .comments-section {
+    max-width: var(--body-width);
+    margin-top: 72px;
+    padding-top: 48px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .comments-header > .mono,
+  .comments-unavailable > .mono {
+    margin: 0 0 10px;
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+
+  .comments-header h2,
+  .comments-unavailable h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 24px;
+  }
+
+  .comments-header > p:last-child,
+  .comments-unavailable > p:last-child {
+    margin: 12px 0 0;
+    color: var(--mute);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .comments-list-region {
+    margin-top: 32px;
+  }
+
+  .comments-js-required {
+    margin: 32px 0 0;
+    padding: 24px;
+    border: 1px dashed var(--hairline);
+    color: var(--mute);
+    text-align: center;
+  }
+
+  .comments-loading,
+  .comments-empty {
+    margin: 0;
+    padding: 24px;
+    border: 1px dashed var(--hairline);
+    color: var(--mute);
+    text-align: center;
+  }
+
+  .comments-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.comment-item) {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  :global(.comment-item:first-child) {
+    border-top: 1px solid var(--hairline);
+  }
+
+  :global(.comment-item-header) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+  }
+
+  :global(.comment-item-header strong) {
+    color: var(--ink);
+    font-size: 15px;
+  }
+
+  :global(.comment-item-header time) {
+    color: var(--mute);
+    font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+    font-size: 11px;
+  }
+
+  :global(.comment-item > p) {
+    margin: 12px 0 0;
+    color: var(--body);
+    line-height: 1.75;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .comments-retry,
+  .comment-submit-row button {
+    min-height: 44px;
+    border: 1px solid var(--hairline-strong);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .comments-retry {
+    margin-top: 16px;
+    padding-inline: 16px;
+  }
+
+  .comment-form {
+    display: grid;
+    gap: 20px;
+    margin-top: 40px;
+    padding: 28px;
+    border: 1px solid var(--hairline);
+    background: var(--surface-soft);
+  }
+
+  .comment-field {
+    display: grid;
+    gap: 8px;
+  }
+
+  .comment-label-row,
+  .comment-submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .comment-field label {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .comment-label-row output {
+    color: var(--mute);
+    font-size: 12px;
+  }
+
+  .comment-field input,
+  .comment-field textarea {
+    width: 100%;
+    border: 1px solid var(--hairline-strong);
+    border-radius: 4px;
+    background: var(--canvas);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .comment-field input {
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+
+  .comment-field textarea {
+    min-height: 144px;
+    resize: vertical;
+    padding: 12px;
+    line-height: 1.7;
+  }
+
+  .comment-honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .comment-submit-row {
+    align-items: flex-start;
+  }
+
+  .comment-submit-row button {
+    flex: none;
+    padding-inline: 18px;
+    background: var(--ink);
+    color: var(--canvas);
+  }
+
+  .comment-submit-row button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+  }
+
+  .comment-form-status {
+    min-height: 1.7em;
+    margin: 10px 0 0;
+    color: var(--mute);
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: right;
+  }
+
+  .comments-retry:hover,
+  .comments-retry:focus-visible,
+  .comment-submit-row button:hover,
+  .comment-submit-row button:focus-visible {
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .comments-section {
+      margin-top: 56px;
+      padding-top: 40px;
+    }
+
+    .comment-form {
+      padding: 20px;
+    }
+
+    .comment-submit-row {
+      display: grid;
+      justify-content: stretch;
+    }
+
+    .comment-submit-row button {
+      width: 100%;
+    }
+
+    .comment-form-status {
+      margin-top: 0;
+      text-align: left;
+    }
+  }
+</style>

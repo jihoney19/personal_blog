@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortPosts } from '../../lib/posts';
+import { sitePath } from '../../lib/paths';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -10,6 +12,11 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const data = project.data;
+const projectPosts = sortPosts(
+  (await getCollection('posts')).filter(
+    (post) => !post.data.draft && post.data.category === 'Projects',
+  ),
+);
 ---
 
 <BaseLayout title={data.title} currentPath="/projects/">
@@ -62,6 +69,28 @@ const data = project.data;
       <article class="project-content article-body">
         <Content />
       </article>
+
+      {
+        projectPosts.length > 0 && (
+          <section class="project-logs" aria-labelledby="project-logs-title">
+            <h2 id="project-logs-title">Project Logs</h2>
+            <div class="post-list">
+              {projectPosts.map((post) => (
+                <article class="post-row">
+                  <h3>
+                    <a href={sitePath(`/posts/${post.id}/`)}>{post.data.title}</a>
+                  </h3>
+                  <p>{post.data.description}</p>
+                  <div class="meta mono">
+                    <span>{post.data.pubDate}</span>
+                    <span>{post.data.type}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )
+      }
 
       <nav class="project-pagination" aria-label="Project navigation">
         <a href="/projects/" class="project-nav-card">

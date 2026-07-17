@@ -13,13 +13,17 @@ Before starting work, read the following documents that are relevant to the chan
 1. The user's current instructions
 2. `docs/planning/development-blog-plan-en.md`
 3. `docs/design/development-blog-design-plan-v1.0-en.md`
-4. This `AGENTS.md`
+4. `docs/decisions/backend-runtime-architecture.md` for database, comments, or backend work
+5. This `AGENTS.md`
+6. `BLOG_POSTING.md` whenever a remote push is requested
 
 Each document has the following responsibility.
 
 - Service and feature plan: goals, feature scope, content structure, and completion criteria
 - Design plan: visual system, layout, responsive behavior, component states, and accessibility presentation
+- Backend runtime decision: approved data ownership, security boundary, schema, and integration sequence
 - `AGENTS.md`: workflow, code and file rules, technology choices, testing, and result reporting
+- `BLOG_POSTING.md`: mandatory pre-push post selection, authoring, approval, and publication workflow
 
 Do not arbitrarily combine conflicting requirements. The user's latest instructions take highest priority. The two planning documents were synchronized on 2026-07-15, and section `0.1 Cross-Document Alignment Status` of the design document records the rationale for the following current MVP rules.
 
@@ -36,7 +40,9 @@ If any other conflict would materially change the outcome or scope, stop impleme
 - Do not add posts to the initial production site. Do not create sample posts or fabricated learning logs.
 - Record only user-verified facts in the first project, `Personal Development Blog`.
 - Do not infer names, experience, achievements, dates, metrics, contact details, repository URLs, deployment URLs, or images.
-- The site must build completely locally without external APIs, databases, CMSs, or runtime network requests.
+- The Markdown content and all reading routes must build and remain usable without an external runtime service. Separately approved reader-generated features may use the backend defined in `docs/decisions/backend-runtime-architecture.md`.
+- Posts and projects remain in Markdown and Git. Do not move author-managed content into the runtime database.
+- The approved comments extension uses Supabase only for reader-generated data. Keep migrations in the repository and never expose service-role credentials to browser code.
 - Use static HTML and CSS by default. Add browser JavaScript only when required for interactions such as theme switching, the mobile menu, the table of contents, and code copying.
 - Accessibility, responsiveness, and performance are component completion criteria, not final-stage cleanup tasks.
 
@@ -78,6 +84,7 @@ Obtain explicit user approval before performing any of the following work.
 7. Verify functionality, keyboard use, theme behavior, and responsive layout in an actual browser.
 8. Fix the cause of any failure, then rerun regression tests appropriate to the impact scope.
 9. Report changes, verification results, remaining constraints, and items requiring user confirmation.
+10. Before every requested remote push, complete the workflow in `BLOG_POSTING.md`. Do not push until its publication gate is satisfied.
 
 Do not report completion without verification. If a tool or environment issue prevents verification, distinguish it from a test failure and record the exact reason.
 
@@ -104,6 +111,14 @@ Evaluate packages in the following order before adding one.
 5. Is it correctly classified as a production or development dependency?
 
 Do not add UI frameworks, state-management libraries, CSS frameworks, or general-purpose utility libraries solely for convenience. When adding a package, include its purpose, impact, and verification results in the work report. Run the full QA suite after changing version ranges or updating dependencies.
+
+### 6.3 Supabase Runtime Extension
+
+- Treat `supabase/migrations/` as the source of truth for database schema changes.
+- Keep public reads behind Row Level Security and anonymous writes behind a reviewed Edge Function.
+- Browser code may use only the Supabase project URL and publishable key. Service-role keys and hashing secrets belong only in Edge Function secrets.
+- Store only the data required by the approved feature. Do not collect email addresses, raw IP addresses, or authentication data for the comments MVP.
+- New migrations, RLS policies, Edge Functions, and client states require unit, E2E, accessibility, and production-build verification appropriate to their impact.
 
 ## 7. Recommended Project Structure
 
