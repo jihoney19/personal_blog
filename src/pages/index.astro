@@ -57,15 +57,17 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
 
 <style>
   .home-content {
-    padding-bottom: 96px;
+    max-width: 960px;
+    margin-inline: auto;
+    padding-bottom: 120px;
   }
 
   .home-section {
-    padding-top: 96px;
+    padding-top: 112px;
   }
 
   .home-introduction {
-    padding-bottom: 62px;
+    padding-bottom: 24px;
   }
 
   .indexed-heading {
@@ -80,7 +82,7 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
     align-items: center;
     gap: 10px;
     margin: 0;
-    color: var(--mute);
+    color: var(--accent);
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.08em;
@@ -98,18 +100,19 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
   }
 
   .introduction-copy {
-    max-width: 780px;
+    max-width: 760px;
     margin: 32px 0 0;
     color: var(--ink);
-    font-size: 18px;
-    line-height: 1.75;
+    font-family: Georgia, 'Times New Roman', Pretendard, serif;
+    font-size: clamp(23px, 3vw, 31px);
+    line-height: 1.6;
     word-break: keep-all;
   }
 
   .signal-trace {
     width: 100%;
     height: 64px;
-    margin-top: 92px;
+    margin-top: 72px;
   }
 
   .signal-trace svg {
@@ -120,7 +123,7 @@ const categories = [...new Set(posts.map((post) => post.data.category))].sort();
 
   .signal-trace path {
     fill: none;
-    stroke: var(--hairline);
+    stroke: var(--accent);
     stroke-width: 1;
     vector-effect: non-scaling-stroke;
   }
